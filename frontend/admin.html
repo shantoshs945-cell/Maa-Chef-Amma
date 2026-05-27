@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maa Chef Amma — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --brand:#B5451B;--brand-light:#FAECE7;--brand-dark:#712B13;
+      --premix:#3B6D11;--premix-light:#EAF3DE;--premix-dark:#27500A;
+      --gold:#BA7517;
+      --text:#2C2C2A;--muted:#5F5E5A;--surface:#F1EFE8;--white:#fff;
+      --radius:12px;--radius-sm:8px;
+      --sidebar:240px;
+    }
+    body{font-family:'DM Sans',sans-serif;color:var(--text);background:#F5F4F0;min-height:100vh;}
+
+    /* LOGIN */
+    .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--brand-dark),var(--brand));}
+    .login-box{background:#fff;border-radius:var(--radius);padding:2.5rem;width:360px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+    .login-logo{font-family:'Playfair Display',serif;font-size:22px;color:var(--brand-dark);margin-bottom:4px;}
+    .login-sub{font-size:12px;color:var(--muted);margin-bottom:2rem;letter-spacing:1px;text-transform:uppercase;}
+    .login-box h2{font-size:18px;font-weight:500;margin-bottom:1.5rem;}
+    .field{margin-bottom:1rem;}
+    .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;}
+    .field input{width:100%;border:0.5px solid #D3D1C7;border-radius:var(--radius-sm);padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;}
+    .field input:focus{border-color:var(--brand);}
+    .login-btn{width:100%;background:var(--brand);color:#fff;border:none;border-radius:var(--radius-sm);padding:12px;font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;}
+    .login-btn:hover{background:var(--brand-dark);}
+    .login-err{color:var(--brand);font-size:13px;margin-top:8px;display:none;}
+
+    /* LAYOUT */
+    .app{display:none;min-height:100vh;}
+    .app.visible{display:flex;}
+    .sidebar{width:var(--sidebar);background:var(--brand-dark);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;}
+    .sidebar-logo{padding:1.5rem;font-family:'Playfair Display',serif;font-size:16px;border-bottom:0.5px solid rgba(255,255,255,0.1);}
+    .sidebar-logo span{display:block;font-size:11px;font-family:'DM Sans',sans-serif;opacity:0.5;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+    .nav-items{padding:1rem 0;flex:1;}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:10px 1.5rem;font-size:14px;cursor:pointer;transition:background .2s;color:rgba(255,255,255,0.7);}
+    .nav-item:hover,.nav-item.active{background:rgba(255,255,255,0.1);color:#fff;}
+    .nav-item i{font-size:18px;}
+    .sidebar-footer{padding:1rem 1.5rem;border-top:0.5px solid rgba(255,255,255,0.1);}
+    .logout-btn{background:none;border:0.5px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);border-radius:var(--radius-sm);padding:8px 14px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;}
+    .logout-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
+    .main-content{margin-left:var(--sidebar);flex:1;padding:2rem;}
+
+    /* TOPBAR */
+    .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;}
+    .topbar h1{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--brand-dark);}
+    .topbar-actions{display:flex;gap:10px;}
+
+    /* CARDS */
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:2rem;}
+    .stat-card{background:#fff;border-radius:var(--radius);padding:1.25rem;border:0.5px solid #E0DED6;}
+    .stat-card-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+    .stat-card-num{font-family:'Playfair Display',serif;font-size:2rem;color:var(--brand-dark);}
+    .stat-card-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+
+    /* TABLE */
+    .table-wrap{background:#fff;border-radius:var(--radius);border:0.5px solid #E0DED6;overflow:hidden;}
+    .table-header{padding:1rem 1.5rem;border-bottom:0.5px solid #E0DED6;display:flex;align-items:center;justify-content:space-between;}
+    .table-title{font-weight:500;font-size:15px;}
+    table{width:100%;border-collapse:collapse;}
+    th{text-align:left;padding:10px 1.5rem;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;background:#FAFAF8;border-bottom:0.5px solid #E0DED6;}
+    td{padding:12px 1.5rem;font-size:14px;border-bottom:0.5px solid #F1EFE8;}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:#FAFAF8;}
+
+    /* BADGES */
+    .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;}
+    .badge-pending{background:#FEF3C7;color:#92400E;}
+    .badge-confirmed{background:#D1FAE5;color:#065F46;}
+    .badge-delivered{background:#DBEAFE;color:#1E40AF;}
+    .badge-chicken{background:var(--brand-light);color:var(--brand-dark);}
+    .badge-premix{background:var(--premix-light);color:var(--premix-dark);}
+
+    /* BUTTONS */
+    .btn{border:none;border-radius:var(--radius-sm);padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+    .btn-primary{background:var(--brand);color:#fff;}
+    .btn-primary:hover{background:var(--brand-dark);}
+    .btn-sm{padding:5px 10px;font-size:12px;}
+    .btn-ghost{background:none;border:0.5px solid #D3D1C7;color:var(--muted);}
+    .btn-ghost:hover{border-color:var(--brand);color:var(--brand);}
+    .btn-danger{background:#FEE2E2;color:#B91C1C;}
+    .btn-danger:hover{background:#B91C1C;color:#fff;}
+
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:#fff;border-radius:var(--radius);padding:2rem;width:480px;max-width:90vw;max-height:85vh;overflow-y:auto;}
+    .modal h3{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:1.5rem;color:var(--brand-dark);}
+    .form-group{margin-bottom:1rem;}
+    .form-group label{display:block;font-size:13px;font-weight:500;margin-bottom:6px;color:var(--muted);}
+    .form-group input,.form-group select,.form-group textarea{width:100%;border:0.5px solid #D3D1C7;border-radius:var(--radius-sm);padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:#fff;outline:none;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    .modal-btns{display:flex;gap:10px;margin-top:1.5rem;}
+    .modal-cancel{flex:1;background:none;border:0.5px solid #D3D1C7;border-radius:var(--radius-sm);padding:10px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;color:var(--muted);}
+    .modal-submit{flex:2;background:var(--brand);color:#fff;border:none;border-radius:var(--radius-sm);padding:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;}
+
+    /* SECTION */
+    .section{display:none;}
+    .section.active{display:block;}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--brand-dark);color:#fff;padding:12px 24px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;z-index:400;transition:transform .3s;pointer-events:none;}
+    .toast.show{transform:translateX(-50%) translateY(0);}
+
+    .empty{text-align:center;padding:3rem;color:var(--muted);font-size:14px;}
+    .status-select{border:0.5px solid #D3D1C7;border-radius:var(--radius-sm);padding:4px 8px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-logo">Maa Chef Amma</div>
+    <div class="login-sub">Admin Panel</div>
+    <h2>Sign in</h2>
+    <div class="field"><label>Username</label><input type="text" id="loginUser" placeholder="admin"></div>
+    <div class="field"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-err" id="loginErr">Invalid username or password</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="sidebar">
+    <div class="sidebar-logo">Maa Chef Amma<span>Admin Panel</span></div>
+    <div class="nav-items">
+      <div class="nav-item active" onclick="showSection('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+      <div class="nav-item" onclick="showSection('products',this)"><i class="ti ti-package"></i> Products</div>
+      <div class="nav-item" onclick="showSection('orders',this)"><i class="ti ti-clipboard-list"></i> Orders</div>
+      <div class="nav-item" onclick="showSection('reviews',this)"><i class="ti ti-star"></i> Reviews</div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="logout()"><i class="ti ti-logout"></i> Logout</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+
+    <!-- DASHBOARD -->
+    <div class="section active" id="sec-dashboard">
+      <div class="topbar"><h1>Dashboard</h1></div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-card-label">Total Products</div><div class="stat-card-num" id="dash-products">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Total Orders</div><div class="stat-card-num" id="dash-orders">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Pending Orders</div><div class="stat-card-num" id="dash-pending">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Total Revenue</div><div class="stat-card-num" id="dash-revenue">—</div></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header"><span class="table-title">Recent Orders</span></div>
+        <table><thead><tr><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody id="dash-orders-list"></tbody></table>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="section" id="sec-products">
+      <div class="topbar">
+        <h1>Products</h1>
+        <button class="btn btn-primary" onclick="openProductModal()"><i class="ti ti-plus"></i> Add Product</button>
+      </div>
+      <div class="table-wrap">
+        <table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>MRP</th><th>Weight</th><th>Rating</th><th>Actions</th></tr></thead>
+        <tbody id="products-list"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="section" id="sec-orders">
+      <div class="topbar"><h1>Orders</h1></div>
+      <div class="table-wrap">
+        <table><thead><tr><th>ID</th><th>Customer</th><th>Phone</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody id="orders-list"></tbody></table>
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="section" id="sec-reviews">
+      <div class="topbar">
+        <h1>Reviews</h1>
+        <button class="btn btn-primary" onclick="openReviewModal()"><i class="ti ti-plus"></i> Add Review</button>
+      </div>
+      <div class="table-wrap">
+        <table><thead><tr><th>Name</th><th>Review</th><th>Stars</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody id="reviews-list"></tbody></table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <h3 id="productModalTitle">Add Product</h3>
+    <input type="hidden" id="productId">
+    <div class="form-group"><label>Product Name</label><input type="text" id="pName" placeholder="e.g. Boneless Chicken Pickle"></div>
+    <div class="form-group"><label>Description</label><textarea id="pDesc" rows="2" style="resize:none;"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Category</label>
+        <select id="pCategory">
+          <option value="chicken">Chicken Pickle</option>
+          <option value="premix">Premix Powder</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Spice Level</label><input type="text" id="pSpice" placeholder="e.g. Hot"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Price (₹)</label><input type="number" id="pPrice"></div>
+      <div class="form-group"><label>MRP (₹)</label><input type="number" id="pMrp"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Weight</label><input type="text" id="pWeight" placeholder="e.g. 250g"></div>
+      <div class="form-group"><label>Icon class</label><input type="text" id="pIcon" placeholder="ti-drumstick"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Badge (optional)</label><input type="text" id="pBadge" placeholder="bestseller"></div>
+      <div class="form-group"><label>Badge Text</label><input type="text" id="pBadgeText" placeholder="Bestseller"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeProductModal()">Cancel</button>
+      <button class="modal-submit" onclick="saveProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEW MODAL -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal">
+    <h3>Add Review</h3>
+    <div class="form-group"><label>Reviewer Name</label><input type="text" id="rName"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Initials (2 letters)</label><input type="text" id="rInitials" maxlength="2" placeholder="RK"></div>
+      <div class="form-group"><label>Stars (1-5)</label><input type="number" id="rStars" min="1" max="5" value="5"></div>
+    </div>
+    <div class="form-group"><label>Review Text</label><textarea id="rText" rows="3" style="resize:none;"></textarea></div>
+    <div class="form-group"><label>Date Label</label><input type="text" id="rDate" placeholder="e.g. 2 weeks ago"></div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeReviewModal()">Cancel</button>
+      <button class="modal-submit" onclick="saveReview()">Save Review</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const API_BASE = 'http://127.0.0.1:8000';
+  let token = localStorage.getItem('admin_token');
+
+  // --- AUTH ---
+  async function doLogin() {
+    const username = document.getElementById('loginUser').value.trim();
+    const password = document.getElementById('loginPass').value.trim();
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/login`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({username, password})
+      });
+      const data = await res.json();
+      if (data.success) {
+        token = data.token;
+        localStorage.setItem('admin_token', token);
+        showApp();
+      } else {
+        document.getElementById('loginErr').style.display = 'block';
+      }
+    } catch(e) {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  }
+
+  function showApp() {
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('app').classList.add('visible');
+    loadDashboard();
+  }
+
+  function logout() {
+    localStorage.removeItem('admin_token');
+    location.reload();
+  }
+
+  // Auto login if token exists
+  if (token) showApp();
+
+  // --- NAVIGATION ---
+  function showSection(name, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('sec-' + name).classList.add('active');
+    el.classList.add('active');
+    if (name === 'dashboard') loadDashboard();
+    if (name === 'products') loadProducts();
+    if (name === 'orders') loadOrders();
+    if (name === 'reviews') loadReviews();
+  }
+
+  // --- DASHBOARD ---
+  async function loadDashboard() {
+    const [products, orders] = await Promise.all([
+      fetch(`${API_BASE}/api/products/`).then(r => r.json()),
+      fetch(`${API_BASE}/api/orders/`).then(r => r.json())
+    ]);
+    document.getElementById('dash-products').textContent = products.length;
+    document.getElementById('dash-orders').textContent = orders.length;
+    document.getElementById('dash-pending').textContent = orders.filter(o => o.status === 'pending').length;
+    const revenue = orders.reduce((s, o) => s + o.total, 0);
+    document.getElementById('dash-revenue').textContent = '₹' + revenue.toLocaleString();
+    const recent = orders.slice(0, 5);
+    document.getElementById('dash-orders-list').innerHTML = recent.length ? recent.map(o => `
+      <tr>
+        <td>${o.customer_name}</td>
+        <td>${Array.isArray(o.items) ? o.items.length + ' item(s)' : '—'}</td>
+        <td>₹${o.total}</td>
+        <td><span class="badge badge-${o.status}">${o.status}</span></td>
+        <td>${new Date(o.created_at).toLocaleDateString()}</td>
+      </tr>
+    `).join('') : '<tr><td colspan="5" class="empty">No orders yet</td></tr>';
+  }
+
+  // --- PRODUCTS ---
+  async function loadProducts() {
+    const res = await fetch(`${API_BASE}/api/products/`);
+    const products = await res.json();
+    document.getElementById('products-list').innerHTML = products.length ? products.map(p => `
+      <tr>
+        <td><strong>${p.name}</strong></td>
+        <td><span class="badge badge-${p.category}">${p.category}</span></td>
+        <td>₹${p.price}</td>
+        <td>₹${p.mrp || '—'}</td>
+        <td>${p.weight}</td>
+        <td>${p.rating}★</td>
+        <td>
+          <button class="btn btn-sm btn-ghost" onclick="editProduct(${p.id})">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteProduct(${p.id})" style="margin-left:6px;">Hide</button>
+        </td>
+      </tr>
+    `).join('') : '<tr><td colspan="7" class="empty">No products found</td></tr>';
+  }
+
+  let editingProductId = null;
+  function openProductModal(p = null) {
+    editingProductId = null;
+    document.getElementById('productModalTitle').textContent = 'Add Product';
+    document.getElementById('pName').value = '';
+    document.getElementById('pDesc').value = '';
+    document.getElementById('pCategory').value = 'chicken';
+    document.getElementById('pSpice').value = '';
+    document.getElementById('pPrice').value = '';
+    document.getElementById('pMrp').value = '';
+    document.getElementById('pWeight').value = '';
+    document.getElementById('pIcon').value = 'ti-drumstick';
+    document.getElementById('pBadge').value = '';
+    document.getElementById('pBadgeText').value = '';
+    document.getElementById('productModal').classList.add('open');
+  }
+
+  async function editProduct(id) {
+    const res = await fetch(`${API_BASE}/api/products/`);
+    const products = await res.json();
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    editingProductId = id;
+    document.getElementById('productModalTitle').textContent = 'Edit Product';
+    document.getElementById('pName').value = p.name;
+    document.getElementById('pDesc').value = p.description;
+    document.getElementById('pCategory').value = p.category;
+    document.getElementById('pSpice').value = p.spice;
+    document.getElementById('pPrice').value = p.price;
+    document.getElementById('pMrp').value = p.mrp;
+    document.getElementById('pWeight').value = p.weight;
+    document.getElementById('pIcon').value = p.icon;
+    document.getElementById('pBadge').value = p.badge;
+    document.getElementById('pBadgeText').value = p.badge_text;
+    document.getElementById('productModal').classList.add('open');
+  }
+
+  function closeProductModal() { document.getElementById('productModal').classList.remove('open'); }
+
+  async function saveProduct() {
+    const data = {
+      name: document.getElementById('pName').value,
+      description: document.getElementById('pDesc').value,
+      category: document.getElementById('pCategory').value,
+      spice: document.getElementById('pSpice').value,
+      price: parseInt(document.getElementById('pPrice').value),
+      mrp: parseInt(document.getElementById('pMrp').value) || null,
+      weight: document.getElementById('pWeight').value,
+      icon: document.getElementById('pIcon').value || 'ti-drumstick',
+      badge: document.getElementById('pBadge').value,
+      badge_text: document.getElementById('pBadgeText').value,
+      is_active: true
+    };
+    const url = editingProductId ? `${API_BASE}/api/products/${editingProductId}` : `${API_BASE}/api/products/`;
+    const method = editingProductId ? 'PUT' : 'POST';
+    await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    closeProductModal();
+    loadProducts();
+    showToast(editingProductId ? 'Product updated!' : 'Product added!');
+  }
+
+  async function deleteProduct(id) {
+    if (!confirm('Hide this product from the store?')) return;
+    await fetch(`${API_BASE}/api/products/${id}`, { method: 'DELETE' });
+    loadProducts();
+    showToast('Product hidden from store.');
+  }
+
+  // --- ORDERS ---
+  async function loadOrders() {
+    const res = await fetch(`${API_BASE}/api/orders/`);
+    const orders = await res.json();
+    document.getElementById('orders-list').innerHTML = orders.length ? orders.map(o => `
+      <tr>
+        <td>#${o.id}</td>
+        <td><strong>${o.customer_name}</strong><br><small style="color:var(--muted)">${o.address}</small></td>
+        <td>${o.phone}</td>
+        <td>₹${o.total}</td>
+        <td>${o.payment_method}</td>
+        <td>
+          <select class="status-select" onchange="updateOrderStatus(${o.id}, this.value)">
+            <option value="pending" ${o.status==='pending'?'selected':''}>Pending</option>
+            <option value="confirmed" ${o.status==='confirmed'?'selected':''}>Confirmed</option>
+            <option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option>
+          </select>
+        </td>
+        <td>${new Date(o.created_at).toLocaleDateString()}</td>
+      </tr>
+    `).join('') : '<tr><td colspan="7" class="empty">No orders yet</td></tr>';
+  }
+
+  async function updateOrderStatus(id, status) {
+    await fetch(`${API_BASE}/api/orders/${id}/status?status=${status}`, { method: 'PUT' });
+    showToast('Order status updated!');
+  }
+
+  // --- REVIEWS ---
+  async function loadReviews() {
+    const res = await fetch(`${API_BASE}/api/admin/reviews`);
+    const reviews = await res.json();
+    document.getElementById('reviews-list').innerHTML = reviews.length ? reviews.map(r => `
+      <tr>
+        <td><strong>${r.reviewer_name}</strong></td>
+        <td style="max-width:300px;font-size:13px;color:var(--muted)">${r.review_text}</td>
+        <td>${'★'.repeat(r.stars)}</td>
+        <td>${r.date_label}</td>
+        <td>
+          <button class="btn btn-sm btn-danger" onclick="deleteReview(${r.id})">Hide</button>
+        </td>
+      </tr>
+    `).join('') : '<tr><td colspan="5" class="empty">No reviews yet</td></tr>';
+  }
+
+  function openReviewModal() { document.getElementById('reviewModal').classList.add('open'); }
+  function closeReviewModal() { document.getElementById('reviewModal').classList.remove('open'); }
+
+  async function saveReview() {
+    const data = {
+      reviewer_name: document.getElementById('rName').value,
+      initials: document.getElementById('rInitials').value,
+      stars: parseInt(document.getElementById('rStars').value),
+      review_text: document.getElementById('rText').value,
+      date_label: document.getElementById('rDate').value,
+      is_active: true
+    };
+    await fetch(`${API_BASE}/api/admin/reviews`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)
+    });
+    closeReviewModal();
+    loadReviews();
+    showToast('Review added!');
+  }
+
+  async function deleteReview(id) {
+    if (!confirm('Hide this review?')) return;
+    await fetch(`${API_BASE}/api/admin/reviews/${id}`, { method: 'DELETE' });
+    loadReviews();
+    showToast('Review hidden.');
+  }
+
+  // --- TOAST ---
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+</script>
+</body>
+</html>
