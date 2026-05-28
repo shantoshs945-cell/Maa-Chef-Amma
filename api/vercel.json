@@ -1,10 +1,6 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/products", "destination": "/api/index.py/api/products" },
-    { "source": "/api/products/(.*)", "destination": "/api/index.py/api/products/$1" },
-    { "source": "/api/orders", "destination": "/api/index.py/api/orders" },
-    { "source": "/api/orders/(.*)", "destination": "/api/index.py/api/orders/$1" },
-    { "source": "/api/admin/(.*)", "destination": "/api/index.py/api/admin/$1" }
+    { "source": "/api/(.*)", "destination": "/api/index.py/$1" }
   ]
 }
