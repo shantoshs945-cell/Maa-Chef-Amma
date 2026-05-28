@@ -1,11 +1,5 @@
-from fastapi import FastAPI
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-app = FastAPI()
-
-@app.get("/")
-def root():
-    return {"status": "working"}
-
-@app.get("/hello")
-def hello():
-    return {"message": "hello world"}
+from main import app
