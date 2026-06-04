@@ -131,6 +131,75 @@
     .footer-contact a{color:#FAC775;text-decoration:none;}
     .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--brand-dark);color:#fff;padding:12px 24px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;z-index:400;transition:transform .3s;pointer-events:none;}
     .toast.show{transform:translateX(-50%) translateY(0);}
+    /* WhatsApp Floating Button */
+.whatsapp-float {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+}
+
+.whatsapp-btn {
+  width: 58px;
+  height: 58px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+}
+
+.whatsapp-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(37, 211, 102, 0.55);
+}
+
+.whatsapp-btn svg {
+  width: 30px;
+  height: 30px;
+  fill: white;
+}
+
+.whatsapp-tooltip {
+  background: #1A0A00;
+  color: #FDF6EC;
+  font-size: 0.78rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+}
+
+.whatsapp-float:hover .whatsapp-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.whatsapp-pulse {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #25D366;
+  opacity: 0.4;
+  animation: wp-pulse 2s ease-out infinite;
+}
+
+@keyframes wp-pulse {
+  0%   { transform: scale(1);   opacity: 0.4; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
   </style>
 </head>
 <body>
@@ -238,7 +307,23 @@
 </div>
 
 <div class="toast" id="toast"></div>
-
+<!-- WhatsApp Floating Button -->
+<div class="whatsapp-float">
+  <span class="whatsapp-tooltip">Chat &amp; Order on WhatsApp</span>
+  
+    class="whatsapp-btn"
+    id="whatsappBtn"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Order on WhatsApp"
+  >
+    <div class="whatsapp-pulse"></div>
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 1C7.716 1 1 7.716 1 16c0 2.628.668 5.1 1.835 7.261L1 31l7.95-1.812A14.94 14.94 0 0016 31c8.284 0 15-6.716 15-15S24.284 1 16 1zm0 27.2a12.14 12.14 0 01-6.19-1.694l-.444-.264-4.717 1.075 1.121-4.6-.29-.473A12.16 12.16 0 013.8 16C3.8 9.26 9.26 3.8 16 3.8S28.2 9.26 28.2 16 22.74 28.2 16 28.2zm6.67-9.104c-.366-.183-2.163-1.067-2.498-1.189-.335-.12-.579-.183-.823.183-.244.366-.944 1.189-1.157 1.433-.213.244-.427.274-.793.091-.366-.183-1.545-.569-2.943-1.816-1.088-.97-1.822-2.168-2.035-2.534-.213-.366-.023-.563.16-.745.164-.163.366-.427.549-.64.183-.213.244-.366.366-.61.122-.244.061-.457-.03-.64-.092-.183-.824-1.983-1.128-2.716-.297-.713-.598-.616-.823-.628l-.701-.012c-.244 0-.64.091-.975.457-.335.366-1.28 1.25-1.28 3.048s1.311 3.535 1.494 3.779c.183.244 2.58 3.937 6.252 5.522.874.377 1.556.602 2.087.77.877.279 1.676.24 2.308.145.704-.104 2.163-.883 2.468-1.736.305-.853.305-1.585.213-1.736-.09-.152-.334-.244-.7-.427z"/>
+    </svg>
+  </a>
+</div>
 <script>
   // ⚙️ CONFIG — change this when deploying
   const API_BASE = 'https://maa-chef-amma.onrender.com';
@@ -451,6 +536,13 @@
   // --- INIT ---
   loadProducts();
   loadReviews();
+
+  // WhatsApp Button — update your number here
+const WA_NUMBER = "919989340476"; // replace with your actual number (91 = India code)
+const WA_DEFAULT_MSG = "Hi! I'd like to order from Maa Chef Amma 🫙";
+
+document.getElementById('whatsappBtn').href =
+  `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_DEFAULT_MSG)}`;
 </script>
 </body>
 </html>
