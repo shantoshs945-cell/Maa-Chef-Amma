@@ -155,6 +155,7 @@
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   text-decoration: none;
+  overflow: hidden;
 }
 
 .whatsapp-btn:hover {
@@ -162,10 +163,14 @@
   box-shadow: 0 6px 28px rgba(37, 211, 102, 0.55);
 }
 
-.whatsapp-btn svg {
-  width: 30px;
-  height: 30px;
+.whatsapp-btn svg 
+{
+  width: 28px;
+  height: 28px;
   fill: white;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .whatsapp-tooltip {
