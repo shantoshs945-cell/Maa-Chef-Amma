@@ -254,10 +254,6 @@
   <p class="section-title">Our Products</p>
   <div class="products-grid" id="productsGrid"><div class="loading">Loading products...</div></div>
 
-  <div class="reviews-section" id="reviews">
-    <p class="section-title">What Customers Say</p>
-    <div class="reviews-grid" id="reviewsGrid"><div class="loading">Loading reviews...</div></div>
-  </div>
 </div>
 
 <footer>
@@ -300,8 +296,9 @@
     <div class="form-group"><label>Delivery Address</label><textarea id="custAddress" rows="2" style="resize:none;" placeholder="Street, City, Pincode"></textarea></div>
     <div class="form-group"><label>Payment Method</label>
       <select id="payMethod">
-        <option>UPI / PhonePe / GPay</option>
-        <option>Bank Transfer</option>
+        <option value="phonepay">PhonePe</option>
+        <option value="gpay">Google Pay</option>
+        <option value="upi">UPI Transfer</option>
       </select>
     </div>
     <div class="modal-btns">
@@ -353,6 +350,43 @@
   </div>
 </section>
 
+<!-- PhonePe Payment Modal -->
+<div class="modal-overlay" id="phonePeModal">
+  <div class="modal" style="text-align:center;">
+    <h3 style="margin-bottom:0.5rem;">Pay via PhonePe / UPI</h3>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:1.5rem;">Scan QR or tap the button to pay</p>
+
+    <img id="phonePeQR" src="" alt="UPI QR Code"
+      style="width:180px; height:180px; border:2px solid #eee; border-radius:8px; margin-bottom:1rem;">
+
+    <div style="background:var(--surface); border-radius:8px; padding:12px; margin-bottom:1.5rem;">
+      <div style="font-size:13px; color:var(--muted); margin-bottom:4px;">Pay Amount</div>
+      <div id="phonePeAmount" style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--brand-dark); font-weight:600;"></div>
+      <div style="font-size:12px; color:var(--muted); margin-top:6px;">UPI ID: <strong id="phonePeUpiId" style="color:var(--text);"></strong></div>
+    </div>
+
+    <div style="display:flex; gap:10px; margin-bottom:1rem;">
+      <a id="phonePeBtn" href="#" target="_blank"
+        style="flex:1; background:#5f259f; color:white; border:none; border-radius:8px; padding:12px; font-size:14px; font-weight:500; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px;">
+        📱 Open PhonePe
+      </a>
+      <a id="upiBtn" href="#" target="_blank"
+        style="flex:1; background:var(--brand); color:white; border:none; border-radius:8px; padding:12px; font-size:14px; font-weight:500; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px;">
+        💳 Any UPI App
+      </a>
+    </div>
+
+    <p style="font-size:12px; color:var(--muted); margin-bottom:1rem;">
+      After payment, tap the button below to confirm your order.
+    </p>
+
+    <button onclick="closePhonePeModal()"
+      style="width:100%; background:#25D366; color:white; border:none; border-radius:8px; padding:12px; font-size:14px; font-weight:500; cursor:pointer;">
+      ✅ I've Completed the Payment
+    </button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <!-- WhatsApp Floating Button -->
 <div class="whatsapp-float">
@@ -365,77 +399,233 @@
   </a>
 </div>
 <script>
-  // ⚙️ CONFIG — change this when deploying
-  const API_BASE = 'https://maa-chef-amma.onrender.com';
+ // ─── CONFIG ────────────────────────────────────
+const API_BASE = 'https://maa-chef-amma.onrender.com';
+const WA_NUMBER = "919989340476";
+const UPI_ID = "919989340476@axl"; // your PhonePe UPI ID — update this!
 
-  let allProducts = [];
-  let cart = [];
-  let activeFilter = 'all';
-  let searchQuery = '';
+let allProducts = [];
+let cart = [];
+let activeFilter = 'all';
+let searchQuery = '';
+let selectedRating = 0;
 
-  // --- FETCH FROM API ---
-  async function loadProducts() {
-    try {
-      const res = await fetch(`${API_BASE}/api/products/`);
-      allProducts = await res.json();
-      document.getElementById('productCount').textContent = allProducts.length;
-      renderProducts();
-    } catch (e) {
-      document.getElementById('productsGrid').innerHTML = '<p style="color:var(--muted);font-size:14px;">Could not load products. Make sure the API is running.</p>';
-    }
+// ─── PRODUCTS ──────────────────────────────────
+async function loadProducts() {
+  try {
+    const res = await fetch(`${API_BASE}/api/products/`);
+    allProducts = await res.json();
+    document.getElementById('productCount').textContent = allProducts.length;
+    renderProducts();
+  } catch (e) {
+    document.getElementById('productsGrid').innerHTML = '<p style="color:var(--muted);font-size:14px;">Could not load products.</p>';
   }
+}
 
-  async function loadReviews() {
-    try {
-      const res = await fetch(`${API_BASE}/api/admin/reviews`);
-      const reviews = await res.json();
-      renderReviews(reviews.filter(r => r.is_active));
-    } catch (e) {
-      document.getElementById('reviewsGrid').innerHTML = '';
-    }
-  }
+function renderStars(n) {
+  return '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
+}
 
-  // --- RENDER ---
-  function renderStars(n) {
-    return '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
-  }
+function getCardIcon(p) {
+  if (p.category === 'premix') return `<div style="width:64px;height:64px;background:var(--premix-light);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="ti ${p.icon}" style="font-size:28px;color:var(--premix-dark);"></i></div>`;
+  return `<div style="width:64px;height:64px;background:var(--brand-light);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="ti ${p.icon}" style="font-size:28px;color:var(--brand-dark);"></i></div>`;
+}
 
-  function getCardIcon(p) {
-    if (p.category === 'premix') return `<div style="width:64px;height:64px;background:var(--premix-light);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="ti ${p.icon}" style="font-size:28px;color:var(--premix-dark);"></i></div>`;
-    return `<div style="width:64px;height:64px;background:var(--brand-light);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="ti ${p.icon}" style="font-size:28px;color:var(--brand-dark);"></i></div>`;
-  }
-
-  function renderProducts() {
-    const grid = document.getElementById('productsGrid');
-    let filtered = allProducts.filter(p => {
-      const matchCat = activeFilter === 'all' || p.category === activeFilter;
-      const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchCat && matchSearch;
-    });
-    if (!filtered.length) { grid.innerHTML = '<p style="color:var(--muted);font-size:14px;grid-column:1/-1;">No products found.</p>'; return; }
-    grid.innerHTML = filtered.map(p => `
-      <div class="product-card">
-        <div class="product-img ${p.category === 'premix' ? 'premix-bg' : 'pickle-bg'}">
-          ${p.badge_text ? `<span class="product-badge ${p.badge === 'bestseller' ? 'bestseller' : ''}">${p.badge_text}</span>` : ''}
-          <span class="cat-tag ${p.category === 'premix' ? 'premix' : 'pickle'}">${p.category === 'premix' ? 'Premix' : 'Pickle'}</span>
-          ${getCardIcon(p)}
-        </div>
-        <div class="product-info">
-          <div class="stars">${renderStars(p.rating)} <span>(${p.review_count})</span></div>
-          <div class="product-name">${p.name}</div>
-          <div class="product-desc">${p.description}</div>
-          <div class="product-meta">${p.weight}${p.spice ? ' • ' + p.spice : ''}</div>
-          <div class="product-bottom">
-            <div class="product-price ${p.category === 'premix' ? 'premix-price' : ''}">&#8377;${p.price} ${p.mrp ? `<span>&#8377;${p.mrp}</span>` : ''}</div>
-            <button class="add-btn ${p.category === 'premix' ? 'premix-add' : ''}" onclick="addToCart(${p.id})">+ Add</button>
-          </div>
+function renderProducts() {
+  const grid = document.getElementById('productsGrid');
+  let filtered = allProducts.filter(p => {
+    const matchCat = activeFilter === 'all' || p.category === activeFilter;
+    const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchCat && matchSearch;
+  });
+  if (!filtered.length) { grid.innerHTML = '<p style="color:var(--muted);font-size:14px;grid-column:1/-1;">No products found.</p>'; return; }
+  grid.innerHTML = filtered.map(p => `
+    <div class="product-card">
+      <div class="product-img ${p.category === 'premix' ? 'premix-bg' : 'pickle-bg'}">
+        ${p.badge_text ? `<span class="product-badge ${p.badge === 'bestseller' ? 'bestseller' : ''}">${p.badge_text}</span>` : ''}
+        <span class="cat-tag ${p.category === 'premix' ? 'premix' : 'pickle'}">${p.category === 'premix' ? 'Premix' : 'Pickle'}</span>
+        ${getCardIcon(p)}
+      </div>
+      <div class="product-info">
+        <div class="stars">${renderStars(p.rating)} <span>(${p.review_count})</span></div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.description}</div>
+        <div class="product-meta">${p.weight}${p.spice ? ' • ' + p.spice : ''}</div>
+        <div class="product-bottom">
+          <div class="product-price ${p.category === 'premix' ? 'premix-price' : ''}">&#8377;${p.price} ${p.mrp ? `<span>&#8377;${p.mrp}</span>` : ''}</div>
+          <button class="add-btn ${p.category === 'premix' ? 'premix-add' : ''}" onclick="addToCart(${p.id})">+ Add</button>
         </div>
       </div>
-    `).join('');
-  }
+    </div>
+  `).join('');
+}
 
-  function renderReviews(reviews) {
-    document.getElementById('reviewsGrid').innerHTML = reviews.map(r => `
+function filterProducts(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts();
+}
+
+function searchProducts(q) { searchQuery = q; renderProducts(); }
+
+// ─── CART ───────────────────────────────────────
+function addToCart(id) {
+  const p = allProducts.find(x => x.id === id);
+  const existing = cart.find(x => x.id === id);
+  if (existing) existing.qty++;
+  else cart.push({ ...p, qty: 1 });
+  updateCartCount();
+  showToast(p.name + ' added to cart!');
+}
+
+function updateCartCount() {
+  document.getElementById('cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0);
+}
+
+function openCart() {
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartSidebar').classList.add('open');
+  renderCart();
+}
+
+function closeCart() {
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartSidebar').classList.remove('open');
+}
+
+function renderCart() {
+  const el = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+  if (!cart.length) {
+    el.innerHTML = '<div class="cart-empty"><i class="ti ti-shopping-cart-off" style="font-size:48px;display:block;margin-bottom:1rem;opacity:.3;"></i>Your cart is empty</div>';
+    footer.style.display = 'none'; return;
+  }
+  footer.style.display = 'block';
+  el.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-icon">
+        <i class="ti ${item.icon}" style="font-size:22px;color:${item.category === 'premix' ? 'var(--premix-dark)' : 'var(--brand-dark)'};"></i>
+      </div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">&#8377;${item.price * item.qty}</div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(${item.id},-1)">&#8722;</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+        </div>
+      </div>
+      <button class="remove-item" onclick="removeItem(${item.id})"><i class="ti ti-trash"></i></button>
+    </div>
+  `).join('');
+  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+  document.getElementById('cartTotal').textContent = '₹' + total;
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(x => x.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+  updateCartCount();
+  renderCart();
+}
+
+function removeItem(id) { cart = cart.filter(x => x.id !== id); updateCartCount(); renderCart(); }
+
+// ─── ORDER MODAL ────────────────────────────────
+function openOrderModal() {
+  if (!cart.length) return;
+  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+  document.getElementById('orderSummary').innerHTML =
+    cart.map(i => `<div class="order-summary-row"><span>${i.name} x${i.qty}</span><span>&#8377;${i.price * i.qty}</span></div>`).join('') +
+    `<div class="order-summary-row total"><span>Total</span><span>&#8377;${total}</span></div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+  closeCart();
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+async function submitOrder() {
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const address = document.getElementById('custAddress').value.trim();
+  const payment_method = document.getElementById('payMethod').value;
+
+  if (!name || !phone || !address) { showToast('Please fill all fields!'); return; }
+
+  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+  const items = cart.map(i => ({ id: i.id, name: i.name, qty: i.qty, price: i.price }));
+
+  try {
+    await fetch(`${API_BASE}/api/orders/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customer_name: name, phone, address, payment_method, total, items })
+    });
+
+    closeModal();
+
+    // ─── PhonePe / UPI payment ──────────────────
+    if (payment_method === 'phonepay' || payment_method === 'gpay' || payment_method === 'upi') {
+      openPhonePeModal(name, total);
+    } else {
+      // COD or bank transfer
+      cart = [];
+      updateCartCount();
+      showToast('Order placed! We will call to confirm. 🎉');
+    }
+  } catch (e) {
+    showToast('Order failed. Please try WhatsApp instead.');
+  }
+}
+
+// ─── PHONEPE PAYMENT MODAL ──────────────────────
+function openPhonePeModal(customerName, total) {
+  // Build UPI deep link — opens PhonePe/GPay/any UPI app
+  const upiLink = `upi://pay?pa=${UPI_ID}&pn=MaaChefAmma&am=${total}&cu=INR&tn=Order by ${encodeURIComponent(customerName)}`;
+  const phonePeLink = `phonepe://pay?pa=${UPI_ID}&pn=MaaChefAmma&am=${total}&cu=INR&tn=Order by ${encodeURIComponent(customerName)}`;
+
+  document.getElementById('phonePeModal').classList.add('open');
+  document.getElementById('phonePeAmount').textContent = '₹' + total;
+  document.getElementById('phonePeUpiId').textContent = UPI_ID;
+  document.getElementById('phonePeBtn').href = phonePeLink;
+  document.getElementById('upiBtn').href = upiLink;
+
+  // QR code using free API
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiLink)}`;
+  document.getElementById('phonePeQR').src = qrUrl;
+}
+
+function closePhonePeModal() {
+  document.getElementById('phonePeModal').classList.remove('open');
+  cart = [];
+  updateCartCount();
+  showToast('Order placed! Complete payment to confirm. 🎉');
+}
+
+// ─── WHATSAPP ───────────────────────────────────
+function orderWhatsApp() {
+  const items = cart.map(i => `${i.name} x${i.qty} = Rs.${i.price * i.qty}`).join('%0A');
+  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+  window.open(`https://wa.me/${WA_NUMBER}?text=Hello Maa Chef Amma!%0AI would like to order:%0A${items}%0ATotal: Rs.${total}`, '_blank');
+}
+
+document.getElementById('whatsappBtn').href =
+  `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hi! I'd like to order from Maa Chef Amma 🫙")}`;
+
+// ─── REVIEWS ───────────────────────────────────
+async function loadReviews() {
+  try {
+    const res = await fetch(`${API_BASE}/api/reviews/`);
+    const reviews = await res.json();
+    const grid = document.getElementById('reviewsGrid');
+    if (!reviews.length) {
+      grid.innerHTML = '<p style="color:#7A5C3E; grid-column:1/-1; text-align:center;">No reviews yet. Be the first!</p>';
+      return;
+    }
+    grid.innerHTML = reviews.map(r => `
       <div class="review-card">
         <div class="reviewer">
           <div class="reviewer-avatar">${r.initials}</div>
@@ -445,235 +635,55 @@
         <div class="review-text">"${r.review_text}"</div>
       </div>
     `).join('');
-  }
-
-  // --- FILTERS ---
-  function filterProducts(cat, btn) {
-    activeFilter = cat;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderProducts();
-  }
-
-  function searchProducts(q) { searchQuery = q; renderProducts(); }
-
-  // --- CART ---
-  function addToCart(id) {
-    const p = allProducts.find(x => x.id === id);
-    const existing = cart.find(x => x.id === id);
-    if (existing) existing.qty++;
-    else cart.push({ ...p, qty: 1 });
-    updateCartCount();
-    showToast(p.name + ' added to cart!');
-  }
-
-  function updateCartCount() {
-    document.getElementById('cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0);
-  }
-
-  function openCart() {
-    document.getElementById('cartOverlay').classList.add('open');
-    document.getElementById('cartSidebar').classList.add('open');
-    renderCart();
-  }
-
-  function closeCart() {
-    document.getElementById('cartOverlay').classList.remove('open');
-    document.getElementById('cartSidebar').classList.remove('open');
-  }
-
-  function renderCart() {
-    const el = document.getElementById('cartItems');
-    const footer = document.getElementById('cartFooter');
-    if (!cart.length) {
-      el.innerHTML = '<div class="cart-empty"><i class="ti ti-shopping-cart-off" style="font-size:48px;display:block;margin-bottom:1rem;opacity:.3;"></i>Your cart is empty</div>';
-      footer.style.display = 'none'; return;
-    }
-    footer.style.display = 'block';
-    el.innerHTML = cart.map(item => `
-      <div class="cart-item">
-        <div class="cart-item-icon">
-          <i class="ti ${item.icon}" style="font-size:22px;color:${item.category === 'premix' ? 'var(--premix-dark)' : 'var(--brand-dark)'};"></i>
-        </div>
-        <div class="cart-item-info">
-          <div class="cart-item-name">${item.name}</div>
-          <div class="cart-item-price">&#8377;${item.price * item.qty}</div>
-          <div class="qty-ctrl">
-            <button class="qty-btn" onclick="changeQty(${item.id},-1)">&#8722;</button>
-            <span class="qty-num">${item.qty}</span>
-            <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
-          </div>
-        </div>
-        <button class="remove-item" onclick="removeItem(${item.id})"><i class="ti ti-trash"></i></button>
-      </div>
-    `).join('');
-    const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-    document.getElementById('cartTotal').textContent = '₹' + total;
-  }
-
-  function changeQty(id, delta) {
-    const item = cart.find(x => x.id === id);
-    if (!item) return;
-    item.qty += delta;
-    if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
-    updateCartCount();
-    renderCart();
-  }
-
-  function removeItem(id) { cart = cart.filter(x => x.id !== id); updateCartCount(); renderCart(); }
-
-  function openOrderModal() {
-    if (!cart.length) return;
-    const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-    document.getElementById('orderSummary').innerHTML =
-      cart.map(i => `<div class="order-summary-row"><span>${i.name} x${i.qty}</span><span>&#8377;${i.price * i.qty}</span></div>`).join('') +
-      `<div class="order-summary-row total"><span>Total</span><span>&#8377;${total}</span></div>`;
-    document.getElementById('modalOverlay').classList.add('open');
-    closeCart();
-  }
-
-  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
-
-  async function submitOrder() {
-    const name = document.getElementById('custName').value.trim();
-    const phone = document.getElementById('custPhone').value.trim();
-    const address = document.getElementById('custAddress').value.trim();
-    const payment_method = document.getElementById('payMethod').value;
-    if (!name || !phone || !address) { showToast('Please fill all fields!'); return; }
-    const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-    const items = cart.map(i => ({ id: i.id, name: i.name, qty: i.qty, price: i.price }));
-    try {
-      await fetch(`${API_BASE}/api/orders/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customer_name: name, phone, address, payment_method, total, items })
-      });
-      closeModal();
-      cart = [];
-      updateCartCount();
-      showToast('Order placed! We will call to confirm. 🎉');
-    } catch (e) {
-      showToast('Order failed. Please try WhatsApp instead.');
-    }
-  }
-
-  function orderWhatsApp() {
-    const items = cart.map(i => `${i.name} x${i.qty} = Rs.${i.price * i.qty}`).join('%0A');
-    const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-    window.open('https://wa.me/919989340476?text=Hello Maa Chef Amma!%0AI would like to order:%0A' + items + '%0ATotal: Rs.' + total, '_blank');
-  }
-
-  function callUs() { window.open('tel:+919989340476'); }
-  function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
-  }
-
-  // --- INIT ---
-  loadProducts();
-  loadReviews();
-
-  // WhatsApp Button — update your number here
-const WA_NUMBER = "919989340476"; // replace with your actual number (91 = India code)
-const WA_DEFAULT_MSG = "Hi! I'd like to order from Maa Chef Amma 🫙";
-
-document.getElementById('whatsappBtn').href =
-  `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_DEFAULT_MSG)}`;
-
-
-// ─── Reviews ───────────────────────────
-const API = window.location.origin;
-let selectedRating = 0;
-
-// Star picker interaction
-document.getElementById('starPicker').addEventListener('click', e => {
-  if (!e.target.dataset.val) return;
-  selectedRating = parseInt(e.target.dataset.val);
-  document.querySelectorAll('#starPicker span').forEach((s, i) => {
-    s.textContent = i < selectedRating ? '★' : '☆';
-    s.style.color  = i < selectedRating ? '#F5A623' : '#ccc';
-  });
-});
-
-// Load & render reviews
-async function loadReviews() {
-  try {
-    const res     = await fetch(`${API}/api/reviews/`);
-    const reviews = await res.json();
-    const grid    = document.getElementById('reviewsGrid');
-
-    if (!reviews.length) {
-      grid.innerHTML = '<p style="color:#7A5C3E; grid-column:1/-1; text-align:center;">No reviews yet. Be the first!</p>';
-      return;
-    }
-
-    grid.innerHTML = reviews.map(r => `
-      <div style="background:white; border:1px solid rgba(212,168,67,0.2); border-radius:8px; padding:1.5rem;">
-        <div style="color:#F5A623; font-size:1.1rem; margin-bottom:0.5rem; letter-spacing:2px;">
-          ${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}
-        </div>
-        <p style="font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:#3D1C02; font-style:italic; line-height:1.6; margin-bottom:1rem;">
-          "${r.review_text}"
-        </p>
-        <div style="display:flex; align-items:center; gap:0.6rem;">
-          <div style="width:34px; height:34px; border-radius:50%; background:#E8640A; display:flex; align-items:center; justify-content:center; color:white; font-size:0.78rem; font-weight:600; flex-shrink:0;">
-            ${r.initials}
-          </div>
-          <div>
-            <div style="font-size:0.85rem; font-weight:500; color:#3D1C02;">${r.reviewer_name}</div>
-            <div style="font-size:0.72rem; color:#7A5C3E;">${r.date_label}</div>
-          </div>
-        </div>
-      </div>
-    `).join('');
   } catch(e) {
     console.error('Failed to load reviews:', e);
   }
 }
 
-// Submit new review
+document.getElementById('starPicker').addEventListener('click', e => {
+  if (!e.target.dataset.val) return;
+  selectedRating = parseInt(e.target.dataset.val);
+  document.querySelectorAll('#starPicker span').forEach((s, i) => {
+    s.textContent = i < selectedRating ? '★' : '☆';
+    s.style.color = i < selectedRating ? '#F5A623' : '#ccc';
+  });
+});
+
 async function submitReview() {
-  const name    = document.getElementById('reviewName').value.trim();
+  const name = document.getElementById('reviewName').value.trim();
   const message = document.getElementById('reviewMessage').value.trim();
-  const msgEl   = document.getElementById('reviewMsg');
-
-  if (!name || !message || !selectedRating) {
-    alert('Please fill in your name, pick a star rating, and write a review!');
-    return;
-  }
-
+  const msgEl = document.getElementById('reviewMsg');
+  if (!name || !message || !selectedRating) { alert('Please fill in your name, pick a rating, and write a review!'); return; }
   try {
-    const res = await fetch(`${API}/api/reviews/`, {
+    const res = await fetch(`${API_BASE}/api/reviews/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        reviewer_name: name,
-        review_text: message,
-        stars: selectedRating
-      })
+      body: JSON.stringify({ reviewer_name: name, review_text: message, stars: selectedRating })
     });
-
     if (res.ok) {
       msgEl.style.display = 'block';
-      document.getElementById('reviewName').value    = '';
+      document.getElementById('reviewName').value = '';
       document.getElementById('reviewMessage').value = '';
       selectedRating = 0;
-      document.querySelectorAll('#starPicker span').forEach(s => {
-        s.textContent = '☆';
-        s.style.color = '#ccc';
-      });
+      document.querySelectorAll('#starPicker span').forEach(s => { s.textContent = '☆'; s.style.color = '#ccc'; });
       loadReviews();
       setTimeout(() => msgEl.style.display = 'none', 3000);
     }
-  } catch(e) {
-    alert('Something went wrong. Please try again!');
-  }
+  } catch(e) { alert('Something went wrong. Please try again!'); }
 }
 
+// ─── UTILS ─────────────────────────────────────
+function callUs() { window.open('tel:+919989340476'); }
+function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─── INIT ───────────────────────────────────────
+loadProducts();
 loadReviews();
 </script>
 </body>
