@@ -311,6 +311,48 @@
   </div>
 </div>
 
+<!-- Reviews Section -->
+<section id="reviews" style="padding:4rem 2rem; background:#fff9f4;">
+  <div style="max-width:1100px; margin:0 auto;">
+    <h2 style="font-family:'Playfair Display',serif; font-size:2rem; color:#3D1C02; margin-bottom:0.3rem;">What Our Customers Say</h2>
+    <p style="color:#7A5C3E; margin-bottom:2.5rem;">Real reviews from real customers</p>
+
+    <!-- Reviews Grid -->
+    <div id="reviewsGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:1.2rem; margin-bottom:3rem;"></div>
+
+    <!-- Submit Form -->
+    <div style="max-width:500px; margin:0 auto; background:white; border:1px solid rgba(212,168,67,0.25); border-radius:8px; padding:2rem;">
+      <h3 style="font-family:'Playfair Display',serif; color:#3D1C02; margin-bottom:1.5rem;">Leave a Review</h3>
+
+      <input id="reviewName" type="text" placeholder="Your name"
+        style="width:100%; padding:0.7rem 1rem; border:1px solid #e0d0c0; border-radius:4px; margin-bottom:1rem; font-family:inherit; font-size:0.9rem; outline:none; box-sizing:border-box;">
+
+      <!-- Star Picker -->
+      <div style="margin-bottom:1rem;">
+        <p style="font-size:0.8rem; color:#7A5C3E; margin-bottom:0.4rem;">Your Rating</p>
+        <div id="starPicker" style="display:flex; gap:0.4rem; font-size:2rem; cursor:pointer;">
+          <span data-val="1" style="color:#ccc;">☆</span>
+          <span data-val="2" style="color:#ccc;">☆</span>
+          <span data-val="3" style="color:#ccc;">☆</span>
+          <span data-val="4" style="color:#ccc;">☆</span>
+          <span data-val="5" style="color:#ccc;">☆</span>
+        </div>
+      </div>
+
+      <textarea id="reviewMessage" placeholder="Share your experience..." rows="3"
+        style="width:100%; padding:0.7rem 1rem; border:1px solid #e0d0c0; border-radius:4px; margin-bottom:1rem; font-family:inherit; font-size:0.9rem; resize:vertical; outline:none; box-sizing:border-box;"></textarea>
+
+      <button onclick="submitReview()"
+        style="width:100%; background:#E8640A; color:white; border:none; padding:0.8rem; border-radius:4px; font-size:0.9rem; letter-spacing:0.08em; cursor:pointer;">
+        Submit Review
+      </button>
+      <p id="reviewMsg" style="text-align:center; font-size:0.82rem; margin-top:0.8rem; color:#25a244; display:none;">
+        ✅ Thank you! Your review has been submitted.
+      </p>
+    </div>
+  </div>
+</section>
+
 <div class="toast" id="toast"></div>
 <!-- WhatsApp Floating Button -->
 <div class="whatsapp-float">
@@ -541,6 +583,98 @@ const WA_DEFAULT_MSG = "Hi! I'd like to order from Maa Chef Amma 🫙";
 
 document.getElementById('whatsappBtn').href =
   `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_DEFAULT_MSG)}`;
+
+
+// ─── Reviews ───────────────────────────
+const API = window.location.origin;
+let selectedRating = 0;
+
+// Star picker interaction
+document.getElementById('starPicker').addEventListener('click', e => {
+  if (!e.target.dataset.val) return;
+  selectedRating = parseInt(e.target.dataset.val);
+  document.querySelectorAll('#starPicker span').forEach((s, i) => {
+    s.textContent = i < selectedRating ? '★' : '☆';
+    s.style.color  = i < selectedRating ? '#F5A623' : '#ccc';
+  });
+});
+
+// Load & render reviews
+async function loadReviews() {
+  try {
+    const res     = await fetch(`${API}/api/reviews/`);
+    const reviews = await res.json();
+    const grid    = document.getElementById('reviewsGrid');
+
+    if (!reviews.length) {
+      grid.innerHTML = '<p style="color:#7A5C3E; grid-column:1/-1; text-align:center;">No reviews yet. Be the first!</p>';
+      return;
+    }
+
+    grid.innerHTML = reviews.map(r => `
+      <div style="background:white; border:1px solid rgba(212,168,67,0.2); border-radius:8px; padding:1.5rem;">
+        <div style="color:#F5A623; font-size:1.1rem; margin-bottom:0.5rem; letter-spacing:2px;">
+          ${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}
+        </div>
+        <p style="font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:#3D1C02; font-style:italic; line-height:1.6; margin-bottom:1rem;">
+          "${r.review_text}"
+        </p>
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <div style="width:34px; height:34px; border-radius:50%; background:#E8640A; display:flex; align-items:center; justify-content:center; color:white; font-size:0.78rem; font-weight:600; flex-shrink:0;">
+            ${r.initials}
+          </div>
+          <div>
+            <div style="font-size:0.85rem; font-weight:500; color:#3D1C02;">${r.reviewer_name}</div>
+            <div style="font-size:0.72rem; color:#7A5C3E;">${r.date_label}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    console.error('Failed to load reviews:', e);
+  }
+}
+
+// Submit new review
+async function submitReview() {
+  const name    = document.getElementById('reviewName').value.trim();
+  const message = document.getElementById('reviewMessage').value.trim();
+  const msgEl   = document.getElementById('reviewMsg');
+
+  if (!name || !message || !selectedRating) {
+    alert('Please fill in your name, pick a star rating, and write a review!');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API}/api/reviews/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        reviewer_name: name,
+        review_text: message,
+        stars: selectedRating
+      })
+    });
+
+    if (res.ok) {
+      msgEl.style.display = 'block';
+      document.getElementById('reviewName').value    = '';
+      document.getElementById('reviewMessage').value = '';
+      selectedRating = 0;
+      document.querySelectorAll('#starPicker span').forEach(s => {
+        s.textContent = '☆';
+        s.style.color = '#ccc';
+      });
+      loadReviews();
+      setTimeout(() => msgEl.style.display = 'none', 3000);
+    }
+  } catch(e) {
+    alert('Something went wrong. Please try again!');
+  }
+}
+
+loadReviews();
 </script>
 </body>
 </html>

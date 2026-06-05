@@ -1,0 +1,17 @@
+maa-chef-amma/
+├── frontend/
+│   ├── index.html          ← Customer storefront
+│   ├── admin.html          ← Admin panel (password protected)
+│   └── assets/
+│       ├── style.css
+│       └── script.js
+├── api/
+│   ├── main.py             ← FastAPI app
+│   ├── models.py           ← DB models
+│   ├── routes/
+│   │   ├── products.py
+│   │   ├── orders.py
+│   │   └── admin.py
+│   └── database.py         ← Supabase connection
+├── vercel.json             ← Deployment config
+└── requirements.txt

@@ -1,0 +1,3 @@
+https://wapizniekqtfqmggpkro.supabase.co   	//project url
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhcGl6bmlla3F0ZnFtZ2dwa3JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4NDcxMjAsImV4cCI6MjA5NTQyMzEyMH0.V0NJYtrKBwYcgFHrxr1QdZ_j57sXLIWpVyRdwMFGieI	//API
