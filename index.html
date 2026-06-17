@@ -1,690 +1,725 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maa Chef Amma — Homemade Pickles & Premix Powders</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap');
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{
-      --brand:#B5451B;--brand-light:#FAECE7;--brand-dark:#712B13;
-      --gold:#BA7517;--gold-light:#FAEEDA;
-      --premix:#3B6D11;--premix-light:#EAF3DE;--premix-dark:#27500A;
-      --text:#2C2C2A;--muted:#5F5E5A;--surface:#F1EFE8;--white:#fff;
-      --radius:12px;--radius-sm:8px;
-    }
-    body{font-family:'DM Sans',sans-serif;color:var(--text);background:#FAFAF8;}
-    nav{background:var(--white);border-bottom:0.5px solid #D3D1C7;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;}
-    .logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--brand-dark);letter-spacing:0.5px;}
-    .logo span{color:var(--brand);font-size:13px;display:block;font-family:'DM Sans',sans-serif;font-weight:300;letter-spacing:2px;text-transform:uppercase;}
-    .nav-right{display:flex;align-items:center;gap:1.5rem;}
-    .nav-link{font-size:14px;color:var(--muted);cursor:pointer;transition:color .2s;}
-    .nav-link:hover{color:var(--brand);}
-    .cart-btn{background:var(--brand);color:#fff;border:none;border-radius:var(--radius-sm);padding:8px 16px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s;}
-    .cart-btn:hover{background:var(--brand-dark);}
-    .cart-count{background:#fff;color:var(--brand);border-radius:50%;width:18px;height:18px;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;}
-    .hero{background:linear-gradient(135deg,var(--brand-dark) 0%,var(--brand) 60%,#D85A30 100%);color:#fff;padding:4rem 2rem;display:flex;align-items:center;gap:3rem;min-height:340px;position:relative;overflow:hidden;}
-    .hero::before{content:'';position:absolute;top:-40px;right:-40px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,0.05);}
-    .hero::after{content:'';position:absolute;bottom:-60px;right:80px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.04);}
-    .hero-text{flex:1;position:relative;z-index:1;}
-    .hero-badge{background:rgba(255,255,255,0.15);border:0.5px solid rgba(255,255,255,0.3);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:500;letter-spacing:1px;text-transform:uppercase;display:inline-block;margin-bottom:1rem;}
-    .hero h1{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:600;line-height:1.2;margin-bottom:1rem;}
-    .hero p{font-size:15px;opacity:0.85;line-height:1.7;max-width:420px;margin-bottom:1.5rem;}
-    .hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
-    .btn-primary{background:#fff;color:var(--brand-dark);border:none;border-radius:var(--radius-sm);padding:10px 22px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .2s;}
-    .btn-primary:hover{opacity:.9;}
-    .btn-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.5);border-radius:var(--radius-sm);padding:10px 22px;font-size:14px;font-weight:400;cursor:pointer;font-family:'DM Sans',sans-serif;}
-    .hero-stats{display:flex;gap:2rem;position:relative;z-index:1;}
-    .stat{text-align:center;}
-    .stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:600;}
-    .stat-label{font-size:11px;opacity:0.7;letter-spacing:1px;text-transform:uppercase;}
-    .main{padding:2rem;}
-    .filter-bar{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;}
-    .filter-label{font-size:13px;color:var(--muted);font-weight:500;margin-right:4px;}
-    .filter-btn{background:var(--white);border:0.5px solid #D3D1C7;border-radius:20px;padding:6px 16px;font-size:13px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
-    .filter-btn:hover,.filter-btn.active{background:var(--brand);color:#fff;border-color:var(--brand);}
-    .filter-btn.premix-btn:hover,.filter-btn.premix-btn.active{background:var(--premix);border-color:var(--premix);}
-    .search-box{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--white);border:0.5px solid #D3D1C7;border-radius:var(--radius-sm);padding:6px 14px;}
-    .search-box input{border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:transparent;width:160px;}
-    .section-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:600;margin-bottom:1.5rem;color:var(--brand-dark);}
-    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1.25rem;}
-    .product-card{background:var(--white);border:0.5px solid #D3D1C7;border-radius:var(--radius);overflow:hidden;transition:transform .2s,border-color .2s;cursor:pointer;}
-    .product-card:hover{transform:translateY(-3px);border-color:#B4B2A9;}
-    .product-img{width:100%;height:160px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;}
-    .product-img.premix-bg{background:var(--premix-light);}
-    .product-img.pickle-bg{background:var(--brand-light);}
-    .cat-tag{position:absolute;top:10px;right:10px;font-size:10px;font-weight:500;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;}
-    .cat-tag.pickle{background:var(--brand-light);color:var(--brand-dark);}
-    .cat-tag.premix{background:var(--premix-light);color:var(--premix-dark);}
-    .product-badge{position:absolute;top:10px;left:10px;background:var(--brand);color:#fff;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;}
-    .product-badge.bestseller{background:var(--gold);}
-    .product-info{padding:14px;}
-    .product-name{font-weight:500;font-size:14px;margin-bottom:4px;color:var(--text);}
-    .product-desc{font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;}
-    .product-meta{font-size:12px;color:var(--muted);margin-bottom:10px;}
-    .product-bottom{display:flex;align-items:center;justify-content:space-between;}
-    .product-price{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--brand-dark);}
-    .product-price.premix-price{color:var(--premix-dark);}
-    .product-price span{font-size:12px;font-family:'DM Sans',sans-serif;color:var(--muted);text-decoration:line-through;margin-left:4px;}
-    .add-btn{background:var(--brand-light);color:var(--brand-dark);border:none;border-radius:var(--radius-sm);padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;}
-    .add-btn:hover{background:var(--brand);color:#fff;}
-    .add-btn.premix-add{background:var(--premix-light);color:var(--premix-dark);}
-    .add-btn.premix-add:hover{background:var(--premix);color:#fff;}
-    .stars{color:var(--gold);font-size:12px;display:flex;align-items:center;gap:3px;margin-bottom:6px;}
-    .stars span{color:var(--muted);font-size:11px;}
-    .loading{text-align:center;padding:3rem;color:var(--muted);font-size:14px;}
-    .cart-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;}
-    .cart-overlay.open{display:block;}
-    .cart-sidebar{position:fixed;right:0;top:0;bottom:0;width:360px;background:var(--white);z-index:201;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s ease;}
-    .cart-sidebar.open{transform:translateX(0);}
-    .cart-header{padding:1.25rem 1.5rem;border-bottom:0.5px solid #D3D1C7;display:flex;align-items:center;justify-content:space-between;}
-    .cart-header h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;}
-    .close-btn{background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);line-height:1;}
-    .cart-items{flex:1;overflow-y:auto;padding:1rem 1.5rem;}
-    .cart-empty{text-align:center;padding:3rem 0;color:var(--muted);}
-    .cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:0.5px solid #F1EFE8;align-items:center;}
-    .cart-item-icon{font-size:1.6rem;width:48px;height:48px;background:var(--surface);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-    .cart-item-info{flex:1;}
-    .cart-item-name{font-size:14px;font-weight:500;}
-    .cart-item-price{font-size:13px;color:var(--brand-dark);font-weight:500;margin-top:2px;}
-    .qty-ctrl{display:flex;align-items:center;gap:8px;margin-top:6px;}
-    .qty-btn{width:24px;height:24px;border:0.5px solid #D3D1C7;border-radius:6px;background:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--text);}
-    .qty-num{font-size:13px;font-weight:500;min-width:16px;text-align:center;}
-    .remove-item{background:none;border:none;cursor:pointer;color:#D3D1C7;font-size:16px;padding:4px;}
-    .remove-item:hover{color:var(--brand);}
-    .cart-footer{padding:1.25rem 1.5rem;border-top:0.5px solid #D3D1C7;}
-    .cart-total{display:flex;justify-content:space-between;font-weight:500;margin-bottom:1rem;font-size:15px;}
-    .cart-total-price{font-family:'Playfair Display',serif;font-size:20px;color:var(--brand-dark);}
-    .checkout-btn{width:100%;background:var(--brand);color:#fff;border:none;border-radius:var(--radius-sm);padding:14px;font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;}
-    .checkout-btn:hover{background:var(--brand-dark);}
-    .whatsapp-btn{width:100%;background:#25D366;color:#fff;border:none;border-radius:var(--radius-sm);padding:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s;}
-    .whatsapp-btn:hover{opacity:.9;}
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:center;justify-content:center;}
-    .modal-overlay.open{display:flex;}
-    .modal{background:var(--white);border-radius:var(--radius);padding:2rem;width:420px;max-width:90vw;max-height:80vh;overflow-y:auto;}
-    .modal h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:1.5rem;color:var(--brand-dark);}
-    .form-group{margin-bottom:1rem;}
-    .form-group label{display:block;font-size:13px;font-weight:500;margin-bottom:6px;color:var(--muted);}
-    .form-group input,.form-group select,.form-group textarea{width:100%;border:0.5px solid #D3D1C7;border-radius:var(--radius-sm);padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--white);outline:none;}
-    .modal-btns{display:flex;gap:10px;margin-top:1.5rem;}
-    .modal-cancel{flex:1;background:none;border:0.5px solid #D3D1C7;border-radius:var(--radius-sm);padding:10px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;color:var(--muted);}
-    .modal-submit{flex:2;background:var(--brand);color:#fff;border:none;border-radius:var(--radius-sm);padding:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;}
-    .order-summary{background:var(--surface);border-radius:var(--radius-sm);padding:12px;margin-bottom:1rem;font-size:13px;}
-    .order-summary-row{display:flex;justify-content:space-between;padding:3px 0;color:var(--muted);}
-    .order-summary-row.total{font-weight:500;color:var(--text);border-top:0.5px solid #D3D1C7;margin-top:6px;padding-top:6px;}
-    .reviews-section{margin-top:2.5rem;}
-    .reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
-    .review-card{background:var(--white);border:0.5px solid #D3D1C7;border-radius:var(--radius);padding:1.25rem;}
-    .reviewer{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-    .reviewer-avatar{width:38px;height:38px;border-radius:50%;background:var(--brand-light);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:14px;color:var(--brand-dark);}
-    .reviewer-name{font-size:14px;font-weight:500;}
-    .reviewer-date{font-size:11px;color:var(--muted);}
-    .review-text{font-size:13px;line-height:1.6;color:var(--muted);}
-    footer{background:var(--brand-dark);color:rgba(255,255,255,0.8);padding:2rem;margin-top:3rem;display:flex;justify-content:space-between;align-items:center;}
-    .footer-brand{font-family:'Playfair Display',serif;font-size:18px;color:#fff;margin-bottom:4px;}
-    .footer-tagline{font-size:12px;opacity:.6;}
-    .footer-contact{font-size:13px;text-align:right;}
-    .footer-contact a{color:#FAC775;text-decoration:none;}
-    .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--brand-dark);color:#fff;padding:12px 24px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;z-index:400;transition:transform .3s;pointer-events:none;}
-    .toast.show{transform:translateX(-50%) translateY(0);}
-    /* WhatsApp Floating Button */
-.whatsapp-float {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.6rem;
-}
-
-.whatsapp-btn {
-  width: 58px;
-  height: 58px;
-  background: #25D366;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  text-decoration: none;
-  overflow: hidden;
-}
-
-.whatsapp-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 28px rgba(37, 211, 102, 0.55);
-}
-
-.whatsapp-btn svg 
-{
-  width: 28px;
-  height: 28px;
-  fill: white;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.whatsapp-tooltip {
-  background: #1A0A00;
-  color: #FDF6EC;
-  font-size: 0.78rem;
-  padding: 0.45rem 0.9rem;
-  border-radius: 4px;
-  white-space: nowrap;
-  opacity: 0;
-  transform: translateX(10px);
-  transition: opacity 0.2s, transform 0.2s;
-  pointer-events: none;
-}
-
-.whatsapp-float:hover .whatsapp-tooltip {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.whatsapp-pulse {
-  position: absolute;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background: #25D366;
-  opacity: 0.4;
-  animation: wp-pulse 2s ease-out infinite;
-}
-
-@keyframes wp-pulse {
-  0%   { transform: scale(1);   opacity: 0.4; }
-  100% { transform: scale(1.7); opacity: 0; }
-}
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Urban Play Arena – Box Cricket Kakinada</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root{--green:#22c55e;--green-dim:#16a34a;--green-dark:#052e16;--green-card:#0a1f0f;--green-border:#1a3d1f;--bg:#060d07;--surface:#0d1f10;--text:#e8f5e9;--text-muted:#6b8f71;--yours:#f59e0b;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;overflow-x:hidden;}
+  #splash{position:fixed;inset:0;z-index:9999;background:#060d07;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.8s ease,visibility 0.8s ease;}
+  #splash.hide{opacity:0;visibility:hidden;pointer-events:none;}
+  .splash-logo{width:220px;height:220px;object-fit:contain;animation:splashPulse 1.5s ease-in-out infinite alternate;}
+  .splash-name{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:900;letter-spacing:0.2em;color:var(--text);margin-top:1.2rem;text-transform:uppercase;animation:splashFadeIn 0.8s ease 0.3s both;}
+  .splash-bar{width:160px;height:3px;background:var(--green-border);border-radius:2px;margin-top:1.5rem;overflow:hidden;animation:splashFadeIn 0.8s ease 0.5s both;}
+  .splash-bar-fill{height:100%;width:0;background:var(--green);border-radius:2px;animation:splashLoad 2s ease 0.5s forwards;}
+  @keyframes splashPulse{from{transform:scale(0.95);filter:drop-shadow(0 0 8px rgba(34,197,94,0.2));}to{transform:scale(1.05);filter:drop-shadow(0 0 24px rgba(34,197,94,0.5));}}
+  @keyframes splashFadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes splashLoad{from{width:0;}to{width:100%;}}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;background:rgba(6,13,7,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--green-border);}
+  .nav-logo{display:flex;align-items:center;gap:0.6rem;}
+  .nav-logo img{width:38px;height:38px;object-fit:contain;}
+  .nav-logo span{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:0.05em;color:var(--text);}
+  .nav-links{display:flex;gap:2rem;list-style:none;}
+  .nav-links a{color:var(--text-muted);text-decoration:none;font-size:0.9rem;font-weight:500;letter-spacing:0.04em;transition:color 0.2s;}
+  .nav-links a:hover{color:var(--green);}
+  .nav-wa{display:flex;align-items:center;gap:0.5rem;background:var(--green);color:#000;font-weight:700;font-size:0.85rem;padding:0.5rem 1.1rem;border-radius:4px;text-decoration:none;letter-spacing:0.04em;transition:background 0.2s;}
+  .nav-wa:hover{background:#16a34a;}
+  .carousel-wrap{width:100%;overflow:hidden;background:#000;padding-top:60px;}
+  .carousel-track{display:flex;animation:carouselScroll 18s linear infinite;}
+  .carousel-track:hover{animation-play-state:paused;}
+  .carousel-track img{width:420px;height:260px;object-fit:cover;flex-shrink:0;margin-right:12px;border-radius:4px;opacity:0.85;transition:opacity 0.3s;}
+  .carousel-track img:hover{opacity:1;}
+  @keyframes carouselScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+  .hero{position:relative;min-height:92vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 3rem 5rem;overflow:hidden;}
+  .hero-bg{position:absolute;inset:0;z-index:0;background:linear-gradient(to bottom,rgba(6,13,7,0.2) 0%,rgba(6,13,7,0.65) 55%,rgba(6,13,7,1) 100%),url('turf4.jpg') center/cover no-repeat;}
+  .hero-content{position:relative;z-index:1;max-width:680px;}
+  .hero-badge{display:inline-flex;align-items:center;gap:0.4rem;border:1px solid var(--green);color:var(--green);font-size:0.72rem;font-weight:700;letter-spacing:0.12em;padding:0.35rem 0.8rem;border-radius:3px;margin-bottom:1.5rem;}
+  .hero-badge::before{content:'●';font-size:0.5rem;}
+  h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(3rem,8vw,5.5rem);font-weight:900;line-height:0.95;letter-spacing:-0.01em;text-transform:uppercase;}
+  h1 .accent{color:var(--green);}
+  .hero-sub{margin:1.5rem 0 2rem;color:#a7c4aa;font-size:1rem;line-height:1.6;max-width:460px;}
+  .hero-meta{display:flex;gap:2rem;margin-bottom:2rem;}
+  .hero-meta span{display:flex;align-items:center;gap:0.4rem;font-size:0.85rem;color:#a7c4aa;}
+  .hero-meta svg{color:var(--green);}
+  .hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+  .btn-primary{display:inline-flex;align-items:center;gap:0.5rem;background:var(--green);color:#000;font-weight:800;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.85rem 1.6rem;border-radius:4px;text-decoration:none;border:none;cursor:pointer;transition:background 0.2s;}
+  .btn-primary:hover{background:#16a34a;}
+  .btn-primary:disabled{opacity:0.6;cursor:not-allowed;}
+  .btn-secondary{display:inline-flex;align-items:center;gap:0.5rem;background:transparent;color:var(--text);font-weight:700;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.85rem 1.6rem;border-radius:4px;border:1px solid var(--green-border);text-decoration:none;cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+  .btn-secondary:hover{border-color:var(--green);color:var(--green);}
+  section{padding:5rem 3rem;}
+  .section-label{color:var(--green);font-size:0.75rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.75rem;}
+  .section-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;text-transform:uppercase;letter-spacing:0.02em;margin-bottom:0.5rem;}
+  .section-sub{color:var(--text-muted);font-size:0.95rem;margin-bottom:2.5rem;}
+  #slots{background:var(--bg);}
+  .date-nav{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;}
+  .date-nav button{background:none;border:1px solid var(--green-border);color:var(--text);width:36px;height:36px;border-radius:4px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s;}
+  .date-nav button:hover{border-color:var(--green);color:var(--green);}
+  .date-scroll{display:flex;gap:0.75rem;overflow-x:auto;padding-bottom:0.5rem;flex:1;scrollbar-width:none;}
+  .date-scroll::-webkit-scrollbar{display:none;}
+  .date-card{flex-shrink:0;width:90px;padding:0.8rem 0.5rem;border-radius:6px;border:1px solid var(--green-border);background:var(--green-card);text-align:center;cursor:pointer;transition:all 0.2s;}
+  .date-card:hover{border-color:var(--green);}
+  .date-card.active{background:var(--green);border-color:var(--green);color:#000;}
+  .date-card .day-label{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;opacity:0.7;}
+  .date-card .day-num{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;line-height:1;}
+  .date-card .month{font-size:0.7rem;font-weight:600;text-transform:uppercase;opacity:0.7;}
+  .date-card .free-slots{font-size:0.68rem;font-weight:700;margin-top:0.3rem;}
+  .date-card:not(.active) .free-slots{color:var(--green);}
+  .date-card.active .free-slots{color:#000;}
+  .date-display{font-size:0.9rem;color:var(--text-muted);margin-bottom:1.5rem;}
+  .slot-legend{display:flex;gap:1.5rem;margin-bottom:1.5rem;}
+  .legend-item{display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:var(--text-muted);}
+  .legend-dot{width:12px;height:12px;border-radius:2px;}
+  .legend-dot.avail{background:var(--green);}
+  .legend-dot.booked{background:#374151;}
+  .legend-dot.yours{background:var(--yours);}
+  .duration-toggle{display:flex;gap:0;margin-bottom:1.5rem;border:1px solid var(--green-border);border-radius:6px;overflow:hidden;width:fit-content;}
+  .dur-btn{padding:0.65rem 1.6rem;font-size:0.8rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all 0.2s;}
+  .dur-btn.active{background:var(--green);color:#000;}
+  .slots-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+  .slot-card{border:1px solid var(--green-border);border-radius:6px;background:var(--green-card);padding:1rem 1.2rem;cursor:pointer;transition:all 0.2s;position:relative;}
+  .slot-card:hover:not(.booked-slot){border-color:var(--green);}
+  .slot-card.selected{border-color:var(--yours);background:rgba(245,158,11,0.08);}
+  .slot-card.booked-slot{opacity:0.4;cursor:not-allowed;border-color:#1f2937;}
+  .slot-status{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-align:right;margin-bottom:0.6rem;}
+  .slot-status.open{color:var(--green);}
+  .slot-status.booked{color:#6b7280;}
+  .slot-status.yours{color:var(--yours);}
+  .slot-time{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:0.04em;}
+  .slot-price{font-size:0.75rem;color:var(--green);margin-top:0.3rem;font-weight:600;}
+  .slot-header{display:flex;align-items:center;justify-content:space-between;}
+  .cancel-slot-btn{margin-top:0.75rem;width:100%;padding:0.45rem 0.75rem;background:transparent;border:1px solid #ef444466;border-radius:4px;color:#ef4444;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+  .cancel-slot-btn:hover{background:rgba(239,68,68,0.1);border-color:#ef4444;}
+  .slots-loading{text-align:center;color:var(--text-muted);padding:2rem;font-size:0.9rem;grid-column:1/-1;}
+  .payment-options{display:flex;flex-direction:column;gap:0.6rem;}
+  .payment-option{display:flex;align-items:center;gap:0.9rem;border:1px solid var(--green-border);border-radius:6px;padding:0.75rem 1rem;cursor:pointer;transition:all 0.2s;background:var(--green-dark);}
+  .payment-option:hover{border-color:var(--green);}
+  .payment-option.active{border-color:var(--green);background:rgba(34,197,94,0.08);}
+  .payment-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:6px;flex-shrink:0;background:#5f259f22;}
+  .payment-label{flex:1;}
+  .payment-name{font-weight:700;font-size:0.9rem;}
+  .payment-sub{font-size:0.72rem;color:var(--text-muted);margin-top:0.1rem;}
+  .payment-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--green-border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:transparent;transition:all 0.2s;flex-shrink:0;}
+  .payment-option.active .payment-check{background:var(--green);border-color:var(--green);color:#000;font-weight:900;}
+  .amount-toggle{display:flex;gap:0.6rem;margin-top:0.5rem;}
+  .amt-btn{flex:1;padding:0.6rem;border:1px solid var(--green-border);border-radius:5px;background:transparent;color:var(--text-muted);font-size:0.8rem;font-weight:700;cursor:pointer;text-align:center;transition:all 0.2s;}
+  .amt-btn.active{border-color:var(--green);background:rgba(34,197,94,0.1);color:var(--green);}
+  .amt-btn span{display:block;font-size:0.7rem;font-weight:400;color:var(--text-muted);margin-top:0.1rem;}
+  .amt-btn.active span{color:var(--green);}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:#0d1f10;border:1px solid var(--green-border);border-radius:10px;padding:2rem;width:90%;max-width:480px;max-height:90vh;overflow-y:auto;}
+  .modal h2{font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;font-weight:900;text-transform:uppercase;margin-bottom:0.3rem;}
+  .modal-slot-info{color:var(--green);font-size:0.85rem;font-weight:600;margin-bottom:1.5rem;}
+  .form-group{margin-bottom:1rem;}
+  .form-group label{display:block;font-size:0.78rem;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.4rem;text-transform:uppercase;}
+  .form-group input,.form-group select{width:100%;padding:0.7rem 1rem;background:var(--green-dark);border:1px solid var(--green-border);border-radius:5px;color:var(--text);font-size:0.9rem;font-family:'Barlow',sans-serif;outline:none;transition:border-color 0.2s;}
+  .form-group input:focus,.form-group select:focus{border-color:var(--green);}
+  .form-group select option{background:#0a1f0f;}
+  .modal-btns{display:flex;gap:0.75rem;margin-top:1.5rem;}
+  .modal-btns .btn-primary{flex:1;justify-content:center;}
+  .btn-cancel{flex:1;padding:0.85rem;border:1px solid var(--green-border);background:none;color:var(--text-muted);border-radius:4px;cursor:pointer;font-weight:700;font-size:0.85rem;transition:all 0.2s;}
+  .btn-cancel:hover{border-color:#ef4444;color:#ef4444;}
+  .confirm-box{display:none;text-align:center;}
+  .confirm-box.show{display:block;}
+  .confirm-icon{font-size:3rem;margin-bottom:1rem;}
+  .confirm-box h3{font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:900;text-transform:uppercase;color:var(--green);margin-bottom:0.5rem;}
+  .confirm-box p{color:var(--text-muted);font-size:0.9rem;line-height:1.6;}
+  .confirm-details{background:var(--green-dark);border-radius:6px;padding:1rem;margin:1rem 0;text-align:left;}
+  .confirm-details div{display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.4rem;}
+  .confirm-details div:last-child{margin-bottom:0;}
+  .confirm-details span:first-child{color:var(--text-muted);}
+  .confirm-details span:last-child{font-weight:700;color:var(--green);}
+  #pricing{background:var(--surface);}
+  .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;}
+  .price-card{border:1px solid var(--green-border);border-radius:8px;background:var(--green-card);padding:1.8rem;position:relative;}
+  .price-card.featured{border-color:var(--green);}
+  .price-badge{position:absolute;top:-0.6rem;left:1.2rem;background:var(--green);color:#000;font-size:0.68rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:3px;}
+  .price-name{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.3rem;}
+  .price-time{color:var(--text-muted);font-size:0.82rem;margin-bottom:1.2rem;}
+  .price-amount{font-family:'Barlow Condensed',sans-serif;font-size:2.4rem;font-weight:900;color:var(--text);}
+  .price-amount span{font-size:0.9rem;color:var(--text-muted);font-family:'Barlow',sans-serif;font-weight:400;}
+  .price-divider{height:1px;background:var(--green-border);margin:1.2rem 0;}
+  .price-btn{display:block;width:100%;text-align:center;padding:0.75rem;border:1px solid var(--green-border);border-radius:4px;color:var(--text-muted);font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;cursor:pointer;background:none;transition:all 0.2s;}
+  .price-btn:hover{border-color:var(--green);color:var(--green);}
+  .price-card.featured .price-btn{background:var(--green);color:#000;border-color:var(--green);}
+  #facilities{background:var(--bg);}
+  .facilities-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;}
+  .facility-card{border:1px solid var(--green-border);border-radius:8px;background:var(--green-card);padding:1.5rem;transition:border-color 0.2s;}
+  .facility-card:hover{border-color:var(--green);}
+  .facility-icon{width:40px;height:40px;color:var(--green);margin-bottom:1rem;}
+  .facility-name{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.4rem;}
+  .facility-desc{color:var(--text-muted);font-size:0.85rem;line-height:1.5;}
+  #contact{background:var(--surface);}
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;}
+  .contact-info p{color:var(--text-muted);font-size:0.95rem;line-height:1.7;margin-bottom:1.5rem;}
+  .contact-items{display:flex;flex-direction:column;gap:1rem;}
+  .contact-item{display:flex;align-items:flex-start;gap:0.8rem;}
+  .contact-item svg{color:var(--green);flex-shrink:0;margin-top:2px;}
+  .contact-item div{font-size:0.9rem;}
+  .contact-item .ci-label{color:var(--text-muted);font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.2rem;}
+  .contact-wa-big{display:flex;align-items:center;justify-content:center;gap:0.6rem;background:#25d366;color:#000;font-weight:800;font-size:1rem;letter-spacing:0.06em;text-transform:uppercase;padding:1.1rem 2rem;border-radius:6px;text-decoration:none;margin-top:2rem;transition:background 0.2s;}
+  .contact-wa-big:hover{background:#1da851;}
+  .map-placeholder{border-radius:8px;overflow:hidden;border:1px solid var(--green-border);height:300px;background:var(--green-card);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.9rem;flex-direction:column;gap:0.5rem;}
+  .map-placeholder svg{color:var(--green);width:40px;height:40px;}
+  footer{background:var(--bg);border-top:1px solid var(--green-border);padding:2rem 3rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+  .footer-logo{display:flex;align-items:center;gap:0.6rem;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:0.05em;}
+  .footer-logo img{width:32px;height:32px;object-fit:contain;}
+  .footer-copy{color:var(--text-muted);font-size:0.8rem;}
+  .float-chat{position:fixed;bottom:1.5rem;right:1.5rem;z-index:150;width:52px;height:52px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(37,211,102,0.4);text-decoration:none;transition:transform 0.2s;}
+  .float-chat:hover{transform:scale(1.1);}
+  .toast{position:fixed;bottom:5rem;right:1.5rem;z-index:300;background:var(--green);color:#000;font-weight:700;font-size:0.85rem;padding:0.75rem 1.2rem;border-radius:6px;transform:translateY(20px);opacity:0;transition:all 0.3s;pointer-events:none;max-width:300px;}
+  .toast.show{transform:translateY(0);opacity:1;}
+  .toast.error{background:#ef4444;color:#fff;}
+  @media(max-width:768px){nav{padding:0 1rem;}.nav-links{display:none;}section{padding:3rem 1.2rem;}.hero{padding:0 1.2rem 4rem;}.slots-grid{grid-template-columns:1fr 1fr;}.contact-grid{grid-template-columns:1fr;}footer{flex-direction:column;text-align:center;}.carousel-track img{width:300px;height:190px;}}
+</style>
 </head>
 <body>
 
+<div id="splash">
+  <img src="logo.png" class="splash-logo" alt="Urban Play Arena"/>
+  <div class="splash-name">Urban Play Arena</div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+</div>
+
 <nav>
-  <div class="logo">Maa Chef Amma<span>Homemade Pickles & Premix Powders</span></div>
-  <div class="nav-right">
-    <span class="nav-link" onclick="scrollToSection('products')">Products</span>
-    <span class="nav-link" onclick="scrollToSection('reviews')">Reviews</span>
-    <span class="nav-link" onclick="callUs()">Contact</span>
-    <button class="cart-btn" onclick="openCart()">
-      <i class="ti ti-shopping-cart"></i> Cart
-      <span class="cart-count" id="cartCount">0</span>
-    </button>
+  <div class="nav-logo">
+    <img src="logo.png" alt="UPA Logo"/>
+    <span>URBAN PLAY ARENA</span>
   </div>
+  <ul class="nav-links">
+    <li><a href="#slots">Slots</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#facilities">Facilities</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="https://wa.me/917013534047" target="_blank" class="nav-wa">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    WhatsApp
+  </a>
 </nav>
 
-<div class="hero">
-  <div class="hero-text">
-    <div class="hero-badge">Authentic South Indian Homemade Food</div>
-    <h1>Amma's Kitchen,<br>Delivered to You</h1>
-    <p>From fiery chicken pickles to fluffy idly mornings — every product is made with love, tradition, and the finest natural ingredients.</p>
+<div class="carousel-wrap">
+  <div class="carousel-track">
+    <img src="turf2.jpg" alt="Urban Play Arena"/><img src="turf3.jpg" alt="Urban Play Arena"/>
+    <img src="turf4.jpg" alt="Urban Play Arena"/><img src="turf2.jpg" alt="Urban Play Arena"/>
+    <img src="turf3.jpg" alt="Urban Play Arena"/><img src="turf4.jpg" alt="Urban Play Arena"/>
+    <img src="turf2.jpg" alt="Urban Play Arena"/><img src="turf3.jpg" alt="Urban Play Arena"/>
+    <img src="turf4.jpg" alt="Urban Play Arena"/><img src="turf2.jpg" alt="Urban Play Arena"/>
+  </div>
+</div>
+
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">BOOK SLOTS UP TO 14 DAYS IN ADVANCE</div>
+    <h1>YOUR PITCH.<br><span class="accent">YOUR GAME.</span><br>YOUR TIME.</h1>
+    <p class="hero-sub">Premium box cricket arena in the heart of Kakinada. Pick any date, choose your time, and get confirmed instantly.</p>
+    <div class="hero-meta">
+      <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Open 6 AM – 11 PM</span>
+      <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Kakinada, AP</span>
+    </div>
     <div class="hero-btns">
-      <button class="btn-primary" onclick="scrollToSection('products')">Shop Now</button>
-      <button class="btn-outline" onclick="callUs()">Call to Order</button>
-    </div>
-  </div>
-  <div class="hero-stats">
-    <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Happy Customers</div></div>
-    <div class="stat"><div class="stat-num" id="productCount">—</div><div class="stat-label">Products</div></div>
-    <div class="stat"><div class="stat-num">4.9★</div><div class="stat-label">Avg Rating</div></div>
-  </div>
-</div>
-
-<div class="main">
-  <div id="products"></div>
-  <div class="filter-bar" style="margin-top:1rem;">
-    <span class="filter-label">Filter:</span>
-    <button class="filter-btn active" onclick="filterProducts('all',this)">All</button>
-    <button class="filter-btn" onclick="filterProducts('chicken',this)">Chicken Pickles</button>
-    <button class="filter-btn premix-btn" onclick="filterProducts('premix',this)">Premix Powders</button>
-    <div class="search-box">
-      <i class="ti ti-search"></i>
-      <input type="text" id="searchInput" placeholder="Search products..." oninput="searchProducts(this.value)">
-    </div>
-  </div>
-  <p class="section-title">Our Products</p>
-  <div class="products-grid" id="productsGrid"><div class="loading">Loading products...</div></div>
-
-</div>
-
-<footer>
-  <div>
-    <div class="footer-brand">Maa Chef Amma</div>
-    <div class="footer-tagline">Homemade • Traditional • Delicious</div>
-    <div style="font-size:12px;margin-top:6px;opacity:.5;">Kakinada, Andhra Pradesh, India</div>
-  </div>
-  <div class="footer-contact">
-    <div style="margin-bottom:4px;"><i class="ti ti-phone" style="font-size:13px;margin-right:4px;"></i><a href="tel:+919989340476">+91 99893 40476</a></div>
-    <div><i class="ti ti-brand-whatsapp" style="font-size:13px;margin-right:4px;"></i><a href="https://wa.me/919989340476" target="_blank">WhatsApp Order</a></div>
-  </div>
-</footer>
-
-<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
-<div class="cart-sidebar" id="cartSidebar">
-  <div class="cart-header">
-    <h3>Your Cart</h3>
-    <button class="close-btn" onclick="closeCart()"><i class="ti ti-x"></i></button>
-  </div>
-  <div class="cart-items" id="cartItems">
-    <div class="cart-empty"><i class="ti ti-shopping-cart-off" style="font-size:48px;display:block;margin-bottom:1rem;opacity:.3;"></i>Your cart is empty</div>
-  </div>
-  <div class="cart-footer" id="cartFooter" style="display:none;">
-    <div class="cart-total"><span>Total</span><span class="cart-total-price" id="cartTotal">0</span></div>
-    <button class="checkout-btn" onclick="openOrderModal()">Place Order</button>
-    <button class="whatsapp-btn" onclick="orderWhatsApp()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      Order via WhatsApp
-    </button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <h3>Complete Your Order</h3>
-    <div class="order-summary" id="orderSummary"></div>
-    <div class="form-group"><label>Full Name</label><input type="text" id="custName" placeholder="Your name as in your ppay/gpay"></div>
-    <div class="form-group"><label>Phone Number</label><input type="tel" id="custPhone" placeholder="+91 XXXXX XXXXX"></div>
-    <div class="form-group"><label>Delivery Address</label><textarea id="custAddress" rows="2" style="resize:none;" placeholder="Street, City, Pincode"></textarea></div>
-    <div class="form-group"><label>Payment Method</label>
-      <select id="payMethod">
-        <option value="phonepay">PhonePe</option>
-        <option value="gpay">Google Pay</option>
-        <option value="upi">UPI Transfer</option>
-      </select>
-    </div>
-    <div class="modal-btns">
-      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
-      <button class="modal-submit" onclick="submitOrder()">Confirm Order</button>
-    </div>
-  </div>
-</div>
-
-<!-- Reviews Section -->
-<section id="reviews" style="padding:4rem 2rem; background:#fff9f4;">
-  <div style="max-width:1100px; margin:0 auto;">
-    <h2 style="font-family:'Playfair Display',serif; font-size:2rem; color:#3D1C02; margin-bottom:0.3rem;">What Our Customers Say</h2>
-    <p style="color:#7A5C3E; margin-bottom:2.5rem;">Real reviews from real customers</p>
-
-    <!-- Reviews Grid -->
-    <div id="reviewsGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:1.2rem; margin-bottom:3rem;"></div>
-
-    <!-- Submit Form -->
-    <div style="max-width:500px; margin:0 auto; background:white; border:1px solid rgba(212,168,67,0.25); border-radius:8px; padding:2rem;">
-      <h3 style="font-family:'Playfair Display',serif; color:#3D1C02; margin-bottom:1.5rem;">Leave a Review</h3>
-
-      <input id="reviewName" type="text" placeholder="Your name"
-        style="width:100%; padding:0.7rem 1rem; border:1px solid #e0d0c0; border-radius:4px; margin-bottom:1rem; font-family:inherit; font-size:0.9rem; outline:none; box-sizing:border-box;">
-
-      <!-- Star Picker -->
-      <div style="margin-bottom:1rem;">
-        <p style="font-size:0.8rem; color:#7A5C3E; margin-bottom:0.4rem;">Your Rating</p>
-        <div id="starPicker" style="display:flex; gap:0.4rem; font-size:2rem; cursor:pointer;">
-          <span data-val="1" style="color:#ccc;">☆</span>
-          <span data-val="2" style="color:#ccc;">☆</span>
-          <span data-val="3" style="color:#ccc;">☆</span>
-          <span data-val="4" style="color:#ccc;">☆</span>
-          <span data-val="5" style="color:#ccc;">☆</span>
-        </div>
-      </div>
-
-      <textarea id="reviewMessage" placeholder="Share your experience..." rows="3"
-        style="width:100%; padding:0.7rem 1rem; border:1px solid #e0d0c0; border-radius:4px; margin-bottom:1rem; font-family:inherit; font-size:0.9rem; resize:vertical; outline:none; box-sizing:border-box;"></textarea>
-
-      <button onclick="submitReview()"
-        style="width:100%; background:#E8640A; color:white; border:none; padding:0.8rem; border-radius:4px; font-size:0.9rem; letter-spacing:0.08em; cursor:pointer;">
-        Submit Review
-      </button>
-      <p id="reviewMsg" style="text-align:center; font-size:0.82rem; margin-top:0.8rem; color:#25a244; display:none;">
-        ✅ Thank you! Your review has been submitted.
-      </p>
+      <a href="#slots" class="btn-primary">BOOK A SLOT →</a>
+      <a href="https://wa.me/917013534047" target="_blank" class="btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp Us
+      </a>
     </div>
   </div>
 </section>
 
-<!-- PhonePe Payment Modal -->
+<section id="slots">
+  <div class="section-label">LIVE AVAILABILITY</div>
+  <div class="section-title">BOOK YOUR SLOT</div>
+  <p class="section-sub">Select a date — slots available up to 14 days ahead.</p>
+  <div class="date-nav">
+    <button onclick="shiftDates(-1)">&#8249;</button>
+    <div class="date-scroll" id="dateScroll"></div>
+    <button onclick="shiftDates(1)">&#8250;</button>
+  </div>
+  <div class="date-display" id="dateDisplay"></div>
+  <div class="slot-legend">
+    <div class="legend-item"><div class="legend-dot avail"></div>Available</div>
+    <div class="legend-item"><div class="legend-dot booked"></div>Booked</div>
+    <div class="legend-item"><div class="legend-dot yours"></div>Yours</div>
+  </div>
+  <div class="duration-toggle">
+    <button class="dur-btn active" id="dur1" onclick="setDuration(1,this)">1 HOUR</button>
+    <button class="dur-btn" id="dur2" onclick="setDuration(2,this)">2 HOURS</button>
+  </div>
+  <div class="slots-grid" id="slotsGrid"><div class="slots-loading">Loading slots...</div></div>
+</section>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div id="bookingForm">
+      <h2>Confirm Booking</h2>
+      <div class="modal-slot-info" id="modalSlotInfo"></div>
+      <div class="form-group"><label>Full Name</label><input type="text" id="custName" placeholder="Your name"/></div>
+      <div class="form-group"><label>Phone Number</label><input type="tel" id="custPhone" placeholder="+91 XXXXXXXXXX"/></div>
+      <div class="form-group">
+        <label>Number of Players</label>
+        <select id="custPlayers">
+          <option value="5">5 Players</option><option value="6">6 Players</option>
+          <option value="8">8 Players</option><option value="10">10 Players</option><option value="12">12 Players</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Payment Method</label>
+        <div class="payment-options">
+          <div class="payment-option active" id="pay-phonepay">
+            <div class="payment-icon"><svg width="22" height="22" viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="8" fill="#5f259f"/><path d="M10 28V14a2 2 0 012-2h10a6 6 0 010 12H16v4H10z" fill="white"/><circle cx="22" cy="20" r="3" fill="#5f259f"/></svg></div>
+            <div class="payment-label"><div class="payment-name">PhonePe</div><div class="payment-sub">UPI Payment</div></div>
+            <div class="payment-check">✓</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Payment Amount</label>
+        <div class="amount-toggle">
+          <div class="amt-btn active" id="amt-full" onclick="selectAmount('full')">FULL PAYMENT<span id="amt-full-label">₹0</span></div>
+          <div class="amt-btn" id="amt-half" onclick="selectAmount('half')">HALF (ADVANCE)<span id="amt-half-label">₹0</span></div>
+        </div>
+      </div>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" id="confirmBtn" onclick="confirmBooking()">CONFIRM BOOKING</button>
+      </div>
+    </div>
+    <div class="confirm-box" id="confirmBox">
+      <div class="confirm-icon">🏏</div>
+      <h3>Slot Confirmed!</h3>
+      <p>Your slot is booked! Complete payment to confirm.</p>
+      <div class="confirm-details" id="confirmDetails"></div>
+      <div class="modal-btns" style="margin-top:1rem;">
+        <button class="btn-primary" id="proceedPayBtn" style="width:100%;justify-content:center;" onclick="proceedToPayment()">PAY NOW →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHONEPE PAYMENT MODAL -->
 <div class="modal-overlay" id="phonePeModal">
   <div class="modal" style="text-align:center;">
-    <h3 style="margin-bottom:0.5rem;">Pay via PhonePe / UPI</h3>
-    <p style="font-size:13px; color:var(--muted); margin-bottom:1.5rem;">Scan QR or tap the button to pay</p>
-
-    <img id="phonePeQR" src="" alt="UPI QR Code"
-      style="width:180px; height:180px; border:2px solid #eee; border-radius:8px; margin-bottom:1rem;">
-
-    <div style="background:var(--surface); border-radius:8px; padding:12px; margin-bottom:1.5rem;">
-      <div style="font-size:13px; color:var(--muted); margin-bottom:4px;">Pay Amount</div>
-      <div id="phonePeAmount" style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--brand-dark); font-weight:600;"></div>
-      <div style="font-size:12px; color:var(--muted); margin-top:6px;">UPI ID: <strong id="phonePeUpiId" style="color:var(--text);"></strong></div>
+    <h3 style="margin-bottom:0.5rem;font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:900;text-transform:uppercase;">Pay via PhonePe / UPI</h3>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:1.5rem;">Scan QR or tap the button to pay</p>
+    <img id="phonePeQR" src="" alt="UPI QR Code" style="width:180px;height:180px;border:2px solid #1a3d1f;border-radius:8px;margin-bottom:1rem;background:#fff;"/>
+    <div style="background:var(--green-dark);border-radius:8px;padding:12px;margin-bottom:1.5rem;">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">Pay Amount</div>
+      <div id="phonePeAmount" style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--green);"></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">UPI ID: <strong id="phonePeUpiId" style="color:var(--text);"></strong></div>
     </div>
-
-    <div style="display:flex; gap:10px; margin-bottom:1rem;">
-      <a id="phonePeBtn" href="#" target="_blank"
-        style="flex:1; background:#5f259f; color:white; border:none; border-radius:8px; padding:12px; font-size:14px; font-weight:500; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px;">
+    <div style="display:flex;gap:10px;margin-bottom:1rem;">
+      <a id="phonePeBtn" href="#" target="_blank" style="flex:1;background:#5f259f;color:white;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;">
         📱 Open PhonePe
       </a>
-      <a id="upiBtn" href="#" target="_blank"
-        style="flex:1; background:var(--brand); color:white; border:none; border-radius:8px; padding:12px; font-size:14px; font-weight:500; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px;">
+      <a id="upiBtn" href="#" target="_blank" style="flex:1;background:#e65100;color:white;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;">
         💳 Any UPI App
       </a>
     </div>
-
-    <p style="font-size:12px; color:var(--muted); margin-bottom:1rem;">
-      After payment, tap the button below to confirm your order.
-    </p>
-
-    <button onclick="closePhonePeModal()"
-      style="width:100%; background:#25D366; color:white; border:none; border-radius:8px; padding:12px; font-size:14px; font-weight:500; cursor:pointer;">
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:1rem;">After payment, tap the button below to confirm your booking.</p>
+    <button onclick="closePhonePeModal()" style="width:100%;background:#25D366;color:white;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;">
       ✅ I've Completed the Payment
     </button>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
-<!-- WhatsApp Floating Button -->
-<div class="whatsapp-float">
-  <span class="whatsapp-tooltip">Chat &amp; Order on WhatsApp</span>
-  <a class="whatsapp-btn" id="whatsappBtn" href="#" target="_blank" rel="noopener noreferrer" aria-label="Order on WhatsApp">
-    <div class="whatsapp-pulse"></div>
-    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" width="28" height="28" style="fill:white;flex-shrink:0;position:relative;z-index:1;">
-      <path d="M16 1C7.716 1 1 7.716 1 16c0 2.628.668 5.1 1.835 7.261L1 31l7.95-1.812A14.94 14.94 0 0016 31c8.284 0 15-6.716 15-15S24.284 1 16 1zm0 27.2a12.14 12.14 0 01-6.19-1.694l-.444-.264-4.717 1.075 1.121-4.6-.29-.473A12.16 12.16 0 013.8 16C3.8 9.26 9.26 3.8 16 3.8S28.2 9.26 28.2 16 22.74 28.2 16 28.2zm6.67-9.104c-.366-.183-2.163-1.067-2.498-1.189-.335-.12-.579-.183-.823.183-.244.366-.944 1.189-1.157 1.433-.213.244-.427.274-.793.091-.366-.183-1.545-.569-2.943-1.816-1.088-.97-1.822-2.168-2.035-2.534-.213-.366-.023-.563.16-.745.164-.163.366-.427.549-.64.183-.213.244-.366.366-.61.122-.244.061-.457-.03-.64-.092-.183-.824-1.983-1.128-2.716-.297-.713-.598-.616-.823-.628l-.701-.012c-.244 0-.64.091-.975.457-.335.366-1.28 1.25-1.28 3.048s1.311 3.535 1.494 3.779c.183.244 2.58 3.937 6.252 5.522.874.377 1.556.602 2.087.77.877.279 1.676.24 2.308.145.704-.104 2.163-.883 2.468-1.736.305-.853.305-1.585.213-1.736-.09-.152-.334-.244-.7-.427z"/>
-    </svg>
-  </a>
+<!-- CANCEL MODAL -->
+<div class="modal-overlay" id="cancelOverlay">
+  <div class="modal">
+    <div id="cancelForm">
+      <div style="text-align:center;margin-bottom:1.2rem;"><div style="font-size:2.5rem;margin-bottom:0.5rem;">❌</div><h2 style="color:#ef4444;">Cancel Booking?</h2></div>
+      <div class="modal-slot-info" id="cancelSlotInfo"></div>
+      <p style="color:var(--text-muted);font-size:0.88rem;line-height:1.6;margin-bottom:1.5rem;">Are you sure? The slot will become available to others.</p>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeCancelModal()">Keep Booking</button>
+        <button class="btn-primary" id="cancelConfirmBtn" style="background:#ef4444;flex:1;justify-content:center;" onclick="confirmCancel()">YES, CANCEL IT</button>
+      </div>
+    </div>
+    <div class="confirm-box" id="cancelDoneBox">
+      <div class="confirm-icon">✅</div>
+      <h3 style="color:#ef4444;">Booking Cancelled</h3>
+      <p style="color:var(--text-muted);">Your slot is now available for others.</p>
+      <div class="modal-btns" style="margin-top:1.5rem;"><button class="btn-primary" style="width:100%;justify-content:center" onclick="closeCancelModal()">DONE</button></div>
+    </div>
+  </div>
 </div>
+
+<section id="pricing">
+  <div class="section-label">TRANSPARENT PRICING</div>
+  <div class="section-title">RATES &amp; PACKAGES</div>
+  <div class="pricing-grid">
+    <div class="price-card"><div class="price-name">Weekday Morning</div><div class="price-time">Mon–Fri · 6 AM – 5 PM</div><div class="price-amount">₹700 <span>per hour</span></div><div class="price-divider"></div><a href="#slots" class="price-btn">BOOK NOW</a></div>
+    <div class="price-card featured"><div class="price-name">Weekday Evening</div><div class="price-time">Mon–Fri · 5 PM – 11 PM</div><div class="price-amount">₹900 <span>per hour</span></div><div class="price-divider"></div><a href="#slots" class="price-btn">BOOK NOW</a></div>
+    <div class="price-card"><div class="price-name">Weekend Morning</div><div class="price-time">Sat–Sun · 6 AM – 5 PM</div><div class="price-amount">₹700 <span>per hour</span></div><div class="price-divider"></div><a href="#slots" class="price-btn">BOOK NOW</a></div>
+    <div class="price-card featured"><div class="price-badge">PEAK</div><div class="price-name">Weekend Evening</div><div class="price-time">Sat–Sun · 5 PM – 11 PM</div><div class="price-amount">₹1,000 <span>per hour</span></div><div class="price-divider"></div><a href="#slots" class="price-btn">BOOK NOW</a></div>
+  </div>
+</section>
+
+<section id="facilities">
+  <div class="section-label">WORLD-CLASS</div>
+  <div class="section-title">FACILITIES</div>
+  <div class="facilities-grid">
+    <div class="facility-card"><svg class="facility-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><div class="facility-name">Floodlit Ground</div><div class="facility-desc">Full LED lighting for day &amp; night play.</div></div>
+    <div class="facility-card"><svg class="facility-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><div class="facility-name">Safety Nets</div><div class="facility-desc">High-quality netting on all six sides.</div></div>
+    <div class="facility-card"><svg class="facility-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><div class="facility-name">Changing Rooms</div><div class="facility-desc">Clean locker rooms with showers.</div></div>
+    <div class="facility-card"><svg class="facility-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg><div class="facility-name">Equipment Rental</div><div class="facility-desc">Bats, pads, gloves &amp; helmets available.</div></div>
+    <div class="facility-card"><svg class="facility-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><div class="facility-name">Turf Pitch</div><div class="facility-desc">Premium artificial turf surface.</div></div>
+    <div class="facility-card"><svg class="facility-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.12 1.21 2 2 0 012.1 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.09z"/></svg><div class="facility-name">Refreshments</div><div class="facility-desc">Snack counter &amp; water station on-site.</div></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-label">FIND US</div>
+  <div class="section-title">CONTACT &amp; LOCATION</div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <p>Located in Kakinada, Urban Play Arena is open 7 days a week. Walk in or book online.</p>
+      <div class="contact-items">
+        <div class="contact-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div><div class="ci-label">Hours</div><div>6:00 AM – 11:00 PM, Daily</div></div></div>
+        <div class="contact-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><div><div class="ci-label">Address</div><div>Urban Play Arena, Kakinada, Andhra Pradesh</div></div></div>
+        <div class="contact-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.12 1.21 2 2 0 012.1 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.09z"/></svg><div><div class="ci-label">Phone</div><div>+91 70135 34047</div></div></div>
+        <div class="contact-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><div><div class="ci-label">Email</div><div>urbanplayarena@gmail.com</div></div></div>
+      </div>
+      <a href="https://wa.me/917013534047" target="_blank" class="contact-wa-big">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        CHAT ON WHATSAPP
+      </a>
+    </div>
+    <div style="border-radius:8px;overflow:hidden;border:1px solid var(--green-border);height:300px;">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3815.85819954413!2d82.2477879741316!3d16.981523914372442!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a38297ed331c73f%3A0x4fe969f2ceee593b!2sUrban%20Play%20Arena!5e0!3m2!1sen!2sin!4v1781691627764!5m2!1sen!2sin" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo"><img src="logo.png" alt="UPA"/>URBAN PLAY ARENA</div>
+  <div class="footer-copy">© 2026 Urban Play Arena, Kakinada. All rights reserved.</div>
+</footer>
+
+<a href="https://wa.me/917013534047" target="_blank" class="float-chat">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+<div class="toast" id="toast"></div>
+
 <script>
- // ─── CONFIG ────────────────────────────────────
-const API_BASE = 'https://maa-chef-amma.onrender.com';
-const WA_NUMBER = "9989340476";
-const UPI_ID = "9989340476@ybl"; // your PhonePe UPI ID — update this!
+  const API = 'https://urban-play-arena-api.onrender.com';
+  const UPI_ID = '7013534047@axl';
+  const UPI_NAME = 'UrbanPlayArena';
 
-let allProducts = [];
-let cart = [];
-let activeFilter = 'all';
-let searchQuery = '';
-let selectedRating = 0;
+  const ALL_SLOTS = [
+    '06:00 AM – 07:00 AM','07:00 AM – 08:00 AM','08:00 AM – 09:00 AM',
+    '09:00 AM – 10:00 AM','10:00 AM – 11:00 AM','11:00 AM – 12:00 PM',
+    '12:00 PM – 01:00 PM','01:00 PM – 02:00 PM','02:00 PM – 03:00 PM',
+    '03:00 PM – 04:00 PM','04:00 PM – 05:00 PM','05:00 PM – 06:00 PM',
+    '06:00 PM – 07:00 PM','07:00 PM – 08:00 PM','08:00 PM – 09:00 PM',
+    '09:00 PM – 10:00 PM','10:00 PM – 11:00 PM'
+  ];
 
-// ─── PRODUCTS ──────────────────────────────────
-async function loadProducts() {
-  try {
-    const res = await fetch(`${API_BASE}/api/products/`);
-    allProducts = await res.json();
-    document.getElementById('productCount').textContent = allProducts.length;
-    renderProducts();
-  } catch (e) {
-    document.getElementById('productsGrid').innerHTML = '<p style="color:var(--muted);font-size:14px;">Could not load products.</p>';
+  // State
+  let selectedDate = 0;
+  let dateOffset = 0;
+  let currentDuration = 1;
+  let pendingSlot = null;
+  let pendingSlotIndex = -1;
+  let selectedAmount = 'full';
+  let slotToCancel = null;
+  let bookedFromAPI = new Set();
+  let myBookings = []; // [{id, slot, slotIdx, date}]
+
+  // Splash
+  window.addEventListener('load', () => setTimeout(() => document.getElementById('splash').classList.add('hide'), 2600));
+
+  function getDateStr(offset) {
+    const d = new Date(); d.setDate(d.getDate() + offset);
+    return d.toISOString().split('T')[0];
   }
-}
-
-function renderStars(n) {
-  return '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
-}
-
-function getCardIcon(p) {
-  if (p.category === 'premix') return `<div style="width:64px;height:64px;background:var(--premix-light);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="ti ${p.icon}" style="font-size:28px;color:var(--premix-dark);"></i></div>`;
-  return `<div style="width:64px;height:64px;background:var(--brand-light);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="ti ${p.icon}" style="font-size:28px;color:var(--brand-dark);"></i></div>`;
-}
-
-function renderProducts() {
-  const grid = document.getElementById('productsGrid');
-  let filtered = allProducts.filter(p => {
-    const matchCat = activeFilter === 'all' || p.category === activeFilter;
-    const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchCat && matchSearch;
-  });
-  if (!filtered.length) { grid.innerHTML = '<p style="color:var(--muted);font-size:14px;grid-column:1/-1;">No products found.</p>'; return; }
-  grid.innerHTML = filtered.map(p => `
-    <div class="product-card">
-      <div class="product-img ${p.category === 'premix' ? 'premix-bg' : 'pickle-bg'}">
-        ${p.badge_text ? `<span class="product-badge ${p.badge === 'bestseller' ? 'bestseller' : ''}">${p.badge_text}</span>` : ''}
-        <span class="cat-tag ${p.category === 'premix' ? 'premix' : 'pickle'}">${p.category === 'premix' ? 'Premix' : 'Pickle'}</span>
-        ${getCardIcon(p)}
-      </div>
-      <div class="product-info">
-        <div class="stars">${renderStars(p.rating)} <span>(${p.review_count})</span></div>
-        <div class="product-name">${p.name}</div>
-        <div class="product-desc">${p.description}</div>
-        <div class="product-meta">${p.weight}${p.spice ? ' • ' + p.spice : ''}</div>
-        <div class="product-bottom">
-          <div class="product-price ${p.category === 'premix' ? 'premix-price' : ''}">&#8377;${p.price} ${p.mrp ? `<span>&#8377;${p.mrp}</span>` : ''}</div>
-          <button class="add-btn ${p.category === 'premix' ? 'premix-add' : ''}" onclick="addToCart(${p.id})">+ Add</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function filterProducts(cat, btn) {
-  activeFilter = cat;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderProducts();
-}
-
-function searchProducts(q) { searchQuery = q; renderProducts(); }
-
-// ─── CART ───────────────────────────────────────
-function addToCart(id) {
-  const p = allProducts.find(x => x.id === id);
-  const existing = cart.find(x => x.id === id);
-  if (existing) existing.qty++;
-  else cart.push({ ...p, qty: 1 });
-  updateCartCount();
-  showToast(p.name + ' added to cart!');
-}
-
-function updateCartCount() {
-  document.getElementById('cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0);
-}
-
-function openCart() {
-  document.getElementById('cartOverlay').classList.add('open');
-  document.getElementById('cartSidebar').classList.add('open');
-  renderCart();
-}
-
-function closeCart() {
-  document.getElementById('cartOverlay').classList.remove('open');
-  document.getElementById('cartSidebar').classList.remove('open');
-}
-
-function renderCart() {
-  const el = document.getElementById('cartItems');
-  const footer = document.getElementById('cartFooter');
-  if (!cart.length) {
-    el.innerHTML = '<div class="cart-empty"><i class="ti ti-shopping-cart-off" style="font-size:48px;display:block;margin-bottom:1rem;opacity:.3;"></i>Your cart is empty</div>';
-    footer.style.display = 'none'; return;
+  function formatDate(offset) {
+    const d = new Date(); d.setDate(d.getDate() + offset);
+    return d.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   }
-  footer.style.display = 'block';
-  el.innerHTML = cart.map(item => `
-    <div class="cart-item">
-      <div class="cart-item-icon">
-        <i class="ti ${item.icon}" style="font-size:22px;color:${item.category === 'premix' ? 'var(--premix-dark)' : 'var(--brand-dark)'};"></i>
-      </div>
-      <div class="cart-item-info">
-        <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-price">&#8377;${item.price * item.qty}</div>
-        <div class="qty-ctrl">
-          <button class="qty-btn" onclick="changeQty(${item.id},-1)">&#8722;</button>
-          <span class="qty-num">${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+  function shortDay(offset) {
+    const d = new Date(); d.setDate(d.getDate() + offset);
+    return {day:d.toLocaleDateString('en-IN',{weekday:'short'}).toUpperCase(),num:d.getDate(),mon:d.toLocaleDateString('en-IN',{month:'short'}).toUpperCase()};
+  }
+
+  function getRate(dateOffset, slotIdx, hours) {
+    const d = new Date(); d.setDate(d.getDate() + dateOffset);
+    const isWeekend = d.getDay()===0||d.getDay()===6;
+    const isEvening = slotIdx >= 11;
+    let rate = isEvening ? (isWeekend?1000:900) : 700;
+    return rate * hours;
+  }
+
+  // Fetch booked slots from API
+  async function fetchSlots(dateStr) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 60000);
+      const res = await fetch(`${API}/slots?date=${dateStr}`, {signal: controller.signal});
+      clearTimeout(timeout);
+      const data = await res.json();
+      return new Set(data.booked_slots || []);
+    } catch(e) {
+      document.getElementById('slotsGrid').innerHTML = '<div class="slots-loading">⏳ Server waking up, retrying...</div>';
+      // Retry once after 5 seconds
+      await new Promise(r => setTimeout(r, 5000));
+      try {
+        const res = await fetch(`${API}/slots?date=${dateStr}`);
+        const data = await res.json();
+        return new Set(data.booked_slots || []);
+      } catch(e2) {
+        document.getElementById('slotsGrid').innerHTML = '<div class="slots-loading">❌ Could not load slots. Please refresh.</div>';
+        return new Set();
+      }
+    }
+  }
+
+  async function buildDates() {
+    const scroll = document.getElementById('dateScroll');
+    scroll.innerHTML = '';
+    for (let i = dateOffset; i < dateOffset+14; i++) {
+      const info = shortDay(i);
+      const card = document.createElement('div');
+      card.className = 'date-card'+(i===selectedDate?' active':'');
+      card.innerHTML = `<div class="day-label">${i===0?'TODAY':info.day}</div><div class="day-num">${info.num}</div><div class="month">${info.mon}</div><div class="free-slots">- free</div>`;
+      card.onclick = async () => { selectedDate=i; buildDates(); await loadSlots(); updateDateDisplay(); };
+      scroll.appendChild(card);
+    }
+  }
+
+  function updateDateDisplay() {
+    document.getElementById('dateDisplay').textContent = formatDate(selectedDate);
+  }
+
+  function shiftDates(dir) {
+    dateOffset = Math.max(0,Math.min(dateOffset+dir*7,7));
+    buildDates();
+  }
+
+  function setDuration(d, el) {
+    currentDuration = d;
+    document.querySelectorAll('.dur-btn').forEach(b=>b.classList.remove('active'));
+    el.classList.add('active');
+    buildSlots();
+  }
+
+  async function loadSlots() {
+    document.getElementById('slotsGrid').innerHTML = '<div class="slots-loading">Loading slots...</div>';
+    bookedFromAPI = await fetchSlots(getDateStr(selectedDate));
+    buildSlots();
+  }
+
+  function isMyBooking(slotIdx) {
+    const dateStr = getDateStr(selectedDate);
+    return myBookings.find(b => b.date === dateStr && b.slotIdx === slotIdx);
+  }
+
+  function buildSlots() {
+    const grid = document.getElementById('slotsGrid');
+    grid.innerHTML = '';
+    const maxIdx = ALL_SLOTS.length - (currentDuration===2?1:0);
+    for (let i=0; i<maxIdx; i++) {
+      const slot = ALL_SLOTS[i];
+      const slotLabel = currentDuration===2
+        ? slot.split('–')[0].trim()+' – '+(ALL_SLOTS[i+1]||'').split('–')[1]?.trim()
+        : slot;
+      let isBooked = bookedFromAPI.has(slot);
+      if (currentDuration===2 && i+1<ALL_SLOTS.length) isBooked = isBooked || bookedFromAPI.has(ALL_SLOTS[i+1]);
+      const myB = isMyBooking(i);
+      const isMine = !!myB;
+      if (isMine) isBooked = false;
+      const rate = getRate(selectedDate,i,currentDuration);
+      const card = document.createElement('div');
+      card.className = 'slot-card'+(isBooked?' booked-slot':'')+(isMine?' selected':'');
+      card.innerHTML = `
+        <div class="slot-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${isMine?'#f59e0b':isBooked?'#6b7280':'#22c55e'}" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div class="slot-status ${isMine?'yours':isBooked?'booked':'open'}">${isMine?'YOURS':isBooked?'BOOKED':'OPEN'}</div>
         </div>
-      </div>
-      <button class="remove-item" onclick="removeItem(${item.id})"><i class="ti ti-trash"></i></button>
-    </div>
-  `).join('');
-  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-  document.getElementById('cartTotal').textContent = '₹' + total;
-}
+        <div class="slot-time">${slotLabel}</div>
+        <div class="slot-price">₹${rate.toLocaleString('en-IN')}</div>
+        ${isMine?`<button class="cancel-slot-btn" onclick="openCancelModal(${myB.id},'${slot}',${i},event)">✕ Cancel Booking</button>`:''}
+      `;
+      if (!isBooked && !isMine) card.onclick = ()=>openModal(slot,i);
+      grid.appendChild(card);
+    }
+  }
 
-function changeQty(id, delta) {
-  const item = cart.find(x => x.id === id);
-  if (!item) return;
-  item.qty += delta;
-  if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
-  updateCartCount();
-  renderCart();
-}
+  function openModal(slot, slotIdx) {
+    pendingSlot=slot; pendingSlotIndex=slotIdx;
+    selectedAmount='full';
+    document.getElementById('amt-full').classList.add('active');
+    document.getElementById('amt-half').classList.remove('active');
+    const rate = getRate(selectedDate,slotIdx,currentDuration);
+    document.getElementById('amt-full-label').textContent='₹'+rate.toLocaleString('en-IN');
+    document.getElementById('amt-half-label').textContent='₹'+(rate/2).toLocaleString('en-IN');
+    const slotLabel = currentDuration===2
+      ? slot.split('–')[0].trim()+' – '+(ALL_SLOTS[slotIdx+1]||'').split('–')[1]?.trim()
+      : slot;
+    document.getElementById('modalSlotInfo').textContent=`📅 ${formatDate(selectedDate)} · ${slotLabel} · ${currentDuration}hr`;
+    document.getElementById('bookingForm').style.display='block';
+    document.getElementById('confirmBox').classList.remove('show');
+    document.getElementById('modalOverlay').classList.add('open');
+  }
 
-function removeItem(id) { cart = cart.filter(x => x.id !== id); updateCartCount(); renderCart(); }
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    pendingSlot=null; pendingSlotIndex=-1;
+    document.getElementById('custName').value='';
+    document.getElementById('custPhone').value='';
+  }
 
-// ─── ORDER MODAL ────────────────────────────────
-function openOrderModal() {
-  if (!cart.length) return;
-  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-  document.getElementById('orderSummary').innerHTML =
-    cart.map(i => `<div class="order-summary-row"><span>${i.name} x${i.qty}</span><span>&#8377;${i.price * i.qty}</span></div>`).join('') +
-    `<div class="order-summary-row total"><span>Total</span><span>&#8377;${total}</span></div>`;
-  document.getElementById('modalOverlay').classList.add('open');
-  closeCart();
-}
+  function selectAmount(a) {
+    selectedAmount=a;
+    document.getElementById('amt-full').classList.toggle('active',a==='full');
+    document.getElementById('amt-half').classList.toggle('active',a==='half');
+  }
 
-function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+  async function confirmBooking() {
+    const name=document.getElementById('custName').value.trim();
+    const phone=document.getElementById('custPhone').value.trim();
+    const players=document.getElementById('custPlayers').value;
+    if(!name||!phone){showToast('Please fill all fields','error');return;}
+    if(phone.length<10){showToast('Enter a valid phone number','error');return;}
+    const rate=getRate(selectedDate,pendingSlotIndex,currentDuration);
+    const amount=selectedAmount==='full'?rate:Math.round(rate/2);
+    const btn=document.getElementById('confirmBtn');
+    btn.disabled=true; btn.textContent='⏳ Confirming... (may take 30s)';
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+      const res = await fetch(`${API}/bookings`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        signal: controller.signal,
+        body:JSON.stringify({
+          name,phone,
+          date:getDateStr(selectedDate),
+          slot:pendingSlot,
+          duration:currentDuration,
+          players:parseInt(players),
+          payment:'phonepay',
+          amount,
+          amount_type:selectedAmount,
+          type:'online'
+        })
+      });
+      clearTimeout(timeout);
+      if(!res.ok){
+        const err=await res.json();
+        showToast(err.detail||'Booking failed','error');
+        btn.disabled=false; btn.textContent='CONFIRM BOOKING';
+        return;
+      }
+      const data=await res.json();
+      myBookings.push({id:data.booking.id,slot:pendingSlot,slotIdx:pendingSlotIndex,date:getDateStr(selectedDate)});
+      bookedFromAPI.add(pendingSlot);
+      if(currentDuration===2&&pendingSlotIndex+1<ALL_SLOTS.length) bookedFromAPI.add(ALL_SLOTS[pendingSlotIndex+1]);
+      const slotLabel=currentDuration===2?pendingSlot.split('–')[0].trim()+' – '+(ALL_SLOTS[pendingSlotIndex+1]||'').split('–')[1]?.trim():pendingSlot;
+      document.getElementById('confirmDetails').innerHTML=`
+        <div><span>Name</span><span>${name}</span></div>
+        <div><span>Phone</span><span>${phone}</span></div>
+        <div><span>Date</span><span>${formatDate(selectedDate)}</span></div>
+        <div><span>Slot</span><span>${slotLabel}</span></div>
+        <div><span>Duration</span><span>${currentDuration}hr</span></div>
+        <div><span>Total</span><span>₹${rate.toLocaleString('en-IN')}</span></div>
+        <div><span>Paid</span><span>₹${amount.toLocaleString('en-IN')} (${selectedAmount==='full'?'Full':'50% Advance'})</span></div>
+        <div><span>Payment</span><span>📲 PhonePe</span></div>
+      `;
+      document.getElementById('bookingForm').style.display='none';
+      document.getElementById('confirmBox').classList.add('show');
+      // Store amount for payment modal
+      document.getElementById('proceedPayBtn').dataset.amount = amount;
+      buildSlots();
+    } catch(e) {
+      if(e.name === 'AbortError') {
+        showToast('Server is waking up — your booking may have saved. Please check slots before trying again.','error');
+      } else {
+        showToast('Network error. Check your connection and try again.','error');
+      }
+    }
+    btn.disabled=false; btn.textContent='CONFIRM BOOKING';
+  }
 
-async function submitOrder() {
-  const name = document.getElementById('custName').value.trim();
-  const phone = document.getElementById('custPhone').value.trim();
-  const address = document.getElementById('custAddress').value.trim();
-  const payment_method = document.getElementById('payMethod').value;
+  function openCancelModal(bookingId, slot, slotIdx, event) {
+    event.stopPropagation();
+    slotToCancel={id:bookingId,slot,slotIdx};
+    const slotLabel=currentDuration===2?slot.split('–')[0].trim()+' – '+(ALL_SLOTS[slotIdx+1]||'').split('–')[1]?.trim():slot;
+    document.getElementById('cancelSlotInfo').textContent=`📅 ${formatDate(selectedDate)} · ${slotLabel}`;
+    document.getElementById('cancelForm').style.display='block';
+    document.getElementById('cancelDoneBox').classList.remove('show');
+    document.getElementById('cancelOverlay').classList.add('open');
+  }
 
-  if (!name || !phone || !address) { showToast('Please fill all fields!'); return; }
+  function closeCancelModal() {
+    document.getElementById('cancelOverlay').classList.remove('open');
+    slotToCancel=null;
+  }
 
-  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-  const items = cart.map(i => ({ id: i.id, name: i.name, qty: i.qty, price: i.price }));
+  async function confirmCancel() {
+    if(!slotToCancel)return;
+    const btn=document.getElementById('cancelConfirmBtn');
+    btn.disabled=true; btn.textContent='Cancelling...';
+    try {
+      const res=await fetch(`${API}/bookings/${slotToCancel.id}`,{method:'DELETE'});
+      if(!res.ok){showToast('Cancel failed','error');btn.disabled=false;btn.textContent='YES, CANCEL IT';return;}
+      myBookings=myBookings.filter(b=>b.id!==slotToCancel.id);
+      bookedFromAPI.delete(slotToCancel.slot);
+      if(currentDuration===2) bookedFromAPI.delete(ALL_SLOTS[slotToCancel.slotIdx+1]);
+      document.getElementById('cancelForm').style.display='none';
+      document.getElementById('cancelDoneBox').classList.add('show');
+      buildSlots();
+    } catch(e){showToast('Network error','error');}
+    btn.disabled=false; btn.textContent='YES, CANCEL IT';
+  }
 
-  try {
-    await fetch(`${API_BASE}/api/orders/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customer_name: name, phone, address, payment_method, total, items })
-    });
+  function proceedToPayment() {
+    const amount = document.getElementById('proceedPayBtn').dataset.amount;
+    const name = document.getElementById('custName').value.trim() || 'Customer';
+    openPhonePeModal(name, amount);
+  }
 
+  function openPhonePeModal(customerName, total) {
+    const upiLink = `upi://pay?pa=${UPI_ID}&pn=${UPI_NAME}&am=${total}&cu=INR&tn=Booking by ${encodeURIComponent(customerName)}`;
+    const phonePeLink = `phonepe://pay?pa=${UPI_ID}&pn=${UPI_NAME}&am=${total}&cu=INR&tn=Booking by ${encodeURIComponent(customerName)}`;
+    document.getElementById('phonePeModal').classList.add('open');
+    document.getElementById('phonePeAmount').textContent = '₹' + parseInt(total).toLocaleString('en-IN');
+    document.getElementById('phonePeUpiId').textContent = UPI_ID;
+    document.getElementById('phonePeBtn').href = phonePeLink;
+    document.getElementById('upiBtn').href = upiLink;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiLink)}`;
+    document.getElementById('phonePeQR').src = qrUrl;
+  }
+
+  function closePhonePeModal() {
+    document.getElementById('phonePeModal').classList.remove('open');
     closeModal();
-
-    // ─── PhonePe / UPI payment ──────────────────
-    if (payment_method === 'phonepay' || payment_method === 'gpay' || payment_method === 'upi') {
-      openPhonePeModal(name, total);
-    } else {
-      // COD or bank transfer
-      cart = [];
-      updateCartCount();
-      showToast('Order placed! We will call to confirm. 🎉');
-    }
-  } catch (e) {
-    showToast('Order failed. Please try WhatsApp instead.');
+    showToast('Booking confirmed! See you on the pitch 🏏');
   }
-}
 
-// ─── PHONEPE PAYMENT MODAL ──────────────────────
-function openPhonePeModal(customerName, total) {
-  // Build UPI deep link — opens PhonePe/GPay/any UPI app
-  const upiLink = `upi://pay?pa=${UPI_ID}&pn=MaaChefAmma&am=${total}&cu=INR&tn=Order by ${encodeURIComponent(customerName)}`;
-  const phonePeLink = `phonepe://pay?pa=${UPI_ID}&pn=MaaChefAmma&am=${total}&cu=INR&tn=Order by ${encodeURIComponent(customerName)}`;
-
-  document.getElementById('phonePeModal').classList.add('open');
-  document.getElementById('phonePeAmount').textContent = '₹' + total;
-  document.getElementById('phonePeUpiId').textContent = UPI_ID;
-  document.getElementById('phonePeBtn').href = phonePeLink;
-  document.getElementById('upiBtn').href = upiLink;
-
-  // QR code using free API
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiLink)}`;
-  document.getElementById('phonePeQR').src = qrUrl;
-}
-
-function closePhonePeModal() {
-  document.getElementById('phonePeModal').classList.remove('open');
-  cart = [];
-  updateCartCount();
-  showToast('Order placed! Complete payment to confirm. 🎉');
-}
-
-// ─── WHATSAPP ───────────────────────────────────
-function orderWhatsApp() {
-  const items = cart.map(i => `${i.name} x${i.qty} = Rs.${i.price * i.qty}`).join('%0A');
-  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-  window.open(`https://wa.me/${WA_NUMBER}?text=Hello Maa Chef Amma!%0AI would like to order:%0A${items}%0ATotal: Rs.${total}`, '_blank');
-}
-
-document.getElementById('whatsappBtn').href =
-  `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hi! I'd like to order from Maa Chef Amma 🫙")}`;
-
-// ─── REVIEWS ───────────────────────────────────
-async function loadReviews() {
-  try {
-    const res = await fetch(`${API_BASE}/api/reviews/`);
-    const reviews = await res.json();
-    const grid = document.getElementById('reviewsGrid');
-    if (!reviews.length) {
-      grid.innerHTML = '<p style="color:#7A5C3E; grid-column:1/-1; text-align:center;">No reviews yet. Be the first!</p>';
-      return;
-    }
-    grid.innerHTML = reviews.map(r => `
-      <div class="review-card">
-        <div class="reviewer">
-          <div class="reviewer-avatar">${r.initials}</div>
-          <div><div class="reviewer-name">${r.reviewer_name}</div><div class="reviewer-date">${r.date_label}</div></div>
-        </div>
-        <div class="stars" style="margin-bottom:8px;">${renderStars(r.stars)}</div>
-        <div class="review-text">"${r.review_text}"</div>
-      </div>
-    `).join('');
-  } catch(e) {
-    console.error('Failed to load reviews:', e);
+  function showToast(msg, type='') {
+    const t=document.getElementById('toast');
+    t.textContent=msg;
+    t.className='toast'+(type?' '+type:'');
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3000);
   }
-}
 
-document.getElementById('starPicker').addEventListener('click', e => {
-  if (!e.target.dataset.val) return;
-  selectedRating = parseInt(e.target.dataset.val);
-  document.querySelectorAll('#starPicker span').forEach((s, i) => {
-    s.textContent = i < selectedRating ? '★' : '☆';
-    s.style.color = i < selectedRating ? '#F5A623' : '#ccc';
-  });
-});
+  document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+  document.getElementById('cancelOverlay').addEventListener('click',function(e){if(e.target===this)closeCancelModal();});
+  document.getElementById('phonePeModal').addEventListener('click',function(e){if(e.target===this)closePhonePeModal();});
 
-async function submitReview() {
-  const name = document.getElementById('reviewName').value.trim();
-  const message = document.getElementById('reviewMessage').value.trim();
-  const msgEl = document.getElementById('reviewMsg');
-  if (!name || !message || !selectedRating) { alert('Please fill in your name, pick a rating, and write a review!'); return; }
-  try {
-    const res = await fetch(`${API_BASE}/api/reviews/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reviewer_name: name, review_text: message, stars: selectedRating })
-    });
-    if (res.ok) {
-      msgEl.style.display = 'block';
-      document.getElementById('reviewName').value = '';
-      document.getElementById('reviewMessage').value = '';
-      selectedRating = 0;
-      document.querySelectorAll('#starPicker span').forEach(s => { s.textContent = '☆'; s.style.color = '#ccc'; });
-      loadReviews();
-      setTimeout(() => msgEl.style.display = 'none', 3000);
-    }
-  } catch(e) { alert('Something went wrong. Please try again!'); }
-}
-
-// ─── UTILS ─────────────────────────────────────
-function callUs() { window.open('tel:+919989340476'); }
-function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-// ─── INIT ───────────────────────────────────────
-loadProducts();
-loadReviews();
+  // INIT
+  buildDates();
+  updateDateDisplay();
+  loadSlots();
 </script>
 </body>
 </html>
