@@ -19,6 +19,7 @@ class Product(BaseModel):
     rating: Optional[float] = 4.5
     review_count: Optional[int] = 0
     is_active: Optional[bool] = True
+    image_url: Optional[str] = None
 
 @router.get("/")
 def get_products():

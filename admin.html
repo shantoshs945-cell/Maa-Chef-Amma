@@ -201,6 +201,28 @@
   <div class="modal">
     <h3 id="productModalTitle">Add Product</h3>
     <input type="hidden" id="productId">
+     <!-- Image Upload -->
+      <div class="form-group">
+       <label>Product Image</label>
+       <div id="imageUploadArea" style="border:2px dashed #D3D1C7;border-radius:var(--radius-sm);padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s;position:relative;" onclick="document.getElementById('imageFileInput').click()">
+         <div id="imagePreview" style="display:none;margin-bottom:0.8rem;">
+           <img id="previewImg" src="" alt="Preview" style="width:100%;max-height:160px;object-fit:cover;border-radius:var(--radius-sm);">
+         </div>
+         <div id="uploadPlaceholder">
+           <i class="ti ti-photo-up" style="font-size:32px;color:var(--muted);display:block;margin-bottom:8px;"></i>
+            <div style="font-size:13px;color:var(--muted);">Click to upload product image</div>
+              <div style="font-size:11px;color:#B4B2A9;margin-top:4px;">JPG, PNG up to 5MB</div>
+             </div>
+               <input type="file" id="imageFileInput" accept="image/*" style="display:none;" onchange="handleImageSelect(this)">
+             </div>
+              <div id="uploadProgress" style="display:none;margin-top:8px;">
+                 <div style="background:#F1EFE8;border-radius:20px;height:6px;overflow:hidden;">
+                   <div id="progressBar" style="background:var(--brand);height:100%;width:0%;transition:width .3s;border-radius:20px;"></div>
+                 </div>
+                   <div id="uploadStatus" style="font-size:12px;color:var(--muted);margin-top:4px;text-align:center;">Uploading...</div>
+                   </div>
+                     <input type="hidden" id="pImageUrl">
+                   </div>
     <div class="form-group"><label>Product Name</label><input type="text" id="pName" placeholder="e.g. Boneless Chicken Pickle"></div>
     <div class="form-group"><label>Description</label><textarea id="pDesc" rows="2" style="resize:none;"></textarea></div>
     <div class="form-row">
@@ -332,8 +354,18 @@
     const res = await fetch(`${API_BASE}/api/products/`);
     const products = await res.json();
     document.getElementById('products-list').innerHTML = products.length ? products.map(p => `
-      <tr>
-        <td><strong>${p.name}</strong></td>
+  <tr>
+    <td>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:40px;height:40px;border-radius:var(--radius-sm);overflow:hidden;flex-shrink:0;background:${p.category === 'premix' ? 'var(--premix-light)' : 'var(--brand-light)'};display:flex;align-items:center;justify-content:center;">
+          ${p.image_url 
+            ? `<img src="${p.image_url}" style="width:100%;height:100%;object-fit:cover;">` 
+            : `<i class="ti ${p.icon}" style="font-size:18px;color:${p.category === 'premix' ? 'var(--premix-dark)' : 'var(--brand-dark)'};"></i>`
+          }
+        </div>
+        <strong>${p.name}</strong>
+      </div>
+    </td>
         <td><span class="badge badge-${p.category}">${p.category}</span></td>
         <td>₹${p.price}</td>
         <td>₹${p.mrp || '—'}</td>
@@ -360,8 +392,12 @@
     document.getElementById('pWeight').value = '';
     document.getElementById('pIcon').value = 'ti-drumstick';
     document.getElementById('pBadge').value = '';
-    document.getElementById('pBadgeText').value = '';
-    document.getElementById('productModal').classList.add('open');
+    document.getElementById('pImageUrl').value = '';
+document.getElementById('previewImg').src = '';
+document.getElementById('imagePreview').style.display = 'none';
+document.getElementById('uploadPlaceholder').style.display = 'block';
+document.getElementById('uploadProgress').style.display = 'none';
+document.getElementById('productModal').classList.add('open');
   }
 
   async function editProduct(id) {
@@ -382,6 +418,17 @@
     document.getElementById('pBadge').value = p.badge;
     document.getElementById('pBadgeText').value = p.badge_text;
     document.getElementById('productModal').classList.add('open');
+    document.getElementById('pImageUrl').value = p.image_url || '';
+if (p.image_url) {
+  document.getElementById('previewImg').src = p.image_url;
+  document.getElementById('imagePreview').style.display = 'block';
+  document.getElementById('uploadPlaceholder').style.display = 'none';
+} else {
+  document.getElementById('imagePreview').style.display = 'none';
+  document.getElementById('uploadPlaceholder').style.display = 'block';
+}
+document.getElementById('uploadProgress').style.display = 'none';
+document.getElementById('productModal').classList.add('open');
   }
 
   function closeProductModal() { document.getElementById('productModal').classList.remove('open'); }
@@ -398,6 +445,7 @@
       icon: document.getElementById('pIcon').value || 'ti-drumstick',
       badge: document.getElementById('pBadge').value,
       badge_text: document.getElementById('pBadgeText').value,
+      image_url: document.getElementById('pImageUrl').value || null,
       is_active: true
     };
     const url = editingProductId ? `${API_BASE}/api/products/${editingProductId}` : `${API_BASE}/api/products/`;
@@ -494,6 +542,77 @@
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
   }
+
+  // ─── IMAGE UPLOAD ───────────────────────────────
+// ⚠️ Replace these with your actual Supabase values
+const SUPABASE_URL = 'https://wapizniekqtfqmggpkro.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhcGl6bmlla3F0ZnFtZ2dwa3JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4NDcxMjAsImV4cCI6MjA5NTQyMzEyMH0.V0NJYtrKBwYcgFHrxr1QdZ_j57sXLIWpVyRdwMFGieI';
+
+let selectedImageFile = null;
+
+function handleImageSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showToast('Image too large! Max 5MB.'); return; }
+
+  selectedImageFile = file;
+
+  // Show preview
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('previewImg').src = e.target.result;
+    document.getElementById('imagePreview').style.display = 'block';
+    document.getElementById('uploadPlaceholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadImageToSupabase(file) {
+  const ext = file.name.split('.').pop();
+  const fileName = `product-${Date.now()}.${ext}`;
+
+  document.getElementById('uploadProgress').style.display = 'block';
+  document.getElementById('progressBar').style.width = '30%';
+  document.getElementById('uploadStatus').textContent = 'Uploading image...';
+
+  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/product-images/${fileName}`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': file.type,
+      'x-upsert': 'true'
+    },
+    body: file
+  });
+
+  document.getElementById('progressBar').style.width = '100%';
+
+  if (!res.ok) {
+    document.getElementById('uploadStatus').textContent = 'Upload failed!';
+    throw new Error('Upload failed');
+  }
+
+  document.getElementById('uploadStatus').textContent = 'Upload complete ✅';
+
+  const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/product-images/${fileName}`;
+  return publicUrl;
+}
+
+// Override saveProduct to upload image first
+const _originalSaveProduct = saveProduct;
+saveProduct = async function() {
+  if (selectedImageFile) {
+    try {
+      const imageUrl = await uploadImageToSupabase(selectedImageFile);
+      document.getElementById('pImageUrl').value = imageUrl;
+      selectedImageFile = null;
+    } catch(e) {
+      showToast('Image upload failed. Try again!');
+      return;
+    }
+  }
+  await _originalSaveProduct();
+};
 </script>
 </body>
 </html>
