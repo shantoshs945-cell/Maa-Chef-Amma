@@ -575,11 +575,25 @@ async function submitOrder() {
 
     closeModal();
 
+    // Store order details for WhatsApp notification
+    window._lastOrder = { name, phone, address, payment_method, total, items };
+
     // ─── PhonePe / UPI payment ──────────────────
     if (payment_method === 'phonepay' || payment_method === 'gpay' || payment_method === 'upi') {
       openPhonePeModal(name, total);
     } else {
-      // COD or bank transfer
+      // ─── WhatsApp notification to owner ────────
+      const orderItems = items.map(i => `${i.name} x${i.qty} = ₹${i.price * i.qty}`).join('%0A');
+      const ownerMsg = `🛒 *New Order Received!*%0A%0A`
+        + `*Customer:* ${name}%0A`
+        + `*Phone:* ${phone}%0A`
+        + `*Address:* ${address}%0A`
+        + `*Payment:* ${payment_method}%0A%0A`
+        + `*Items:*%0A${orderItems}%0A%0A`
+        + `*Total: ₹${total}*%0A%0A`
+        + `Please confirm the order! 🙏`;
+      window.open(`https://wa.me/${WA_NUMBER}?text=${ownerMsg}`, '_blank');
+      // ───────────────────────────────────────────
       cart = [];
       updateCartCount();
       showToast('Order placed! We will call to confirm. 🎉');
@@ -608,6 +622,24 @@ function openPhonePeModal(customerName, total) {
 
 function closePhonePeModal() {
   document.getElementById('phonePeModal').classList.remove('open');
+
+  // ─── WhatsApp notification to owner ────────────
+  const lastOrder = window._lastOrder;
+  if (lastOrder) {
+    const orderItems = lastOrder.items.map(i => `${i.name} x${i.qty} = ₹${i.price * i.qty}`).join('%0A');
+    const ownerMsg = `💳 *New Order + Payment!*%0A%0A`
+      + `*Customer:* ${lastOrder.name}%0A`
+      + `*Phone:* ${lastOrder.phone}%0A`
+      + `*Address:* ${lastOrder.address}%0A`
+      + `*Payment:* ${lastOrder.payment_method}%0A%0A`
+      + `*Items:*%0A${orderItems}%0A%0A`
+      + `*Total: ₹${lastOrder.total}*%0A%0A`
+      + `Customer says payment is done! Please verify. 🙏`;
+    window.open(`https://wa.me/${WA_NUMBER}?text=${ownerMsg}`, '_blank');
+    window._lastOrder = null;
+  }
+  // ───────────────────────────────────────────────
+
   cart = [];
   updateCartCount();
   showToast('Order placed! Complete payment to confirm. 🎉');
