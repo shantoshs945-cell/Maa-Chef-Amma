@@ -311,10 +311,13 @@
 
       <!-- LEFT: Visual -->
       <div class="product-visual">
-        <div class="product-img-box ${bgClass}" id="mainImgBox">
-          ${p.badge_text ? `<span class="product-badge-large ${p.badge === 'bestseller' ? 'badge-bestseller' : 'badge-new'}">${p.badge_text}</span>` : ''}
-          <i class="ti ${p.icon || 'ti-drumstick'}" style="font-size:120px;opacity:0.25;color:${isPremix ? 'var(--premix-dark)' : 'var(--brand-dark)'}"></i>
-        </div>
+       <div class="product-img-box ${p.image_url ? '' : bgClass}" id="mainImgBox">
+        ${p.badge_text ? `<span class="product-badge-large ${p.badge === 'bestseller' ? 'badge-bestseller' : 'badge-new'}">${p.badge_text}</span>` : ''}
+        ${p.image_url 
+         ? `<img src="${p.image_url}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);">` 
+         : `<i class="ti ${p.icon || 'ti-drumstick'}" style="font-size:120px;opacity:0.25;color:${isPremix ? 'var(--premix-dark)' : 'var(--brand-dark)'}"></i>`
+        }
+       </div>
         <div class="thumb-row">
           <div class="thumb ${bgClass} active">
             <i class="ti ${p.icon || 'ti-drumstick'}"></i>
