@@ -116,7 +116,7 @@
     .btn-outline-gold { background: transparent; color: var(--gold); border: 1px solid rgba(201,160,37,0.4); padding: 0.85rem 2rem; font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase; border-radius: var(--radius-sm); cursor: none; font-family: 'DM Sans', sans-serif; transition: all 0.25s; text-decoration: none; display: inline-block; }
     .btn-outline-gold:hover { border-color: var(--gold); background: rgba(201,160,37,0.08); }
     .hero-stats { display: flex; gap: 2.5rem; margin-top: 3rem; }
-    .hero-stat { }
+    .hero-stat {}
     .hero-stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--gold); line-height: 1; }
     .hero-stat-label { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
 
@@ -322,6 +322,11 @@
     }
 
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    @keyframes skeleton-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+   }
   </style>
 </head>
 <body>
@@ -603,6 +608,10 @@
 
   let allProducts = [], cart = [], activeFilter = 'all', searchQuery = '', selectedRating = 0;
 
+  // Wake up Render immediately on page load
+  fetch(`${API_BASE}/api/products/`).catch(() => {});
+
+
   // ── INTRO ANIMATION ──
   window.addEventListener('load', () => {
     const ring = document.getElementById('introRing');
@@ -640,15 +649,33 @@
 
   // ── PRODUCTS ──
   async function loadProducts() {
-    try {
-      const res = await fetch(`${API_BASE}/api/products/`);
-      allProducts = await res.json();
-      document.getElementById('productCount').textContent = allProducts.length;
-      renderProducts();
-    } catch(e) {
-      document.getElementById('productsGrid').innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;">Could not load products. Please try again.</p>';
-    }
+  // Show skeleton cards while loading
+  document.getElementById('productsGrid').innerHTML = `
+    ${Array(4).fill(`
+      <div style="background:var(--dark-3);border:0.5px solid rgba(201,160,37,0.1);border-radius:12px;overflow:hidden;animation:skeleton-pulse 1.5s ease-in-out infinite;">
+        <div style="height:180px;background:rgba(201,160,37,0.05);"></div>
+        <div style="padding:1.2rem;">
+          <div style="height:12px;background:rgba(201,160,37,0.08);border-radius:20px;margin-bottom:10px;width:60%;"></div>
+          <div style="height:14px;background:rgba(201,160,37,0.06);border-radius:20px;margin-bottom:8px;"></div>
+          <div style="height:12px;background:rgba(201,160,37,0.05);border-radius:20px;width:80%;margin-bottom:16px;"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="height:20px;background:rgba(201,160,37,0.1);border-radius:20px;width:30%;"></div>
+            <div style="height:30px;background:rgba(201,160,37,0.08);border-radius:8px;width:25%;"></div>
+          </div>
+        </div>
+      </div>
+    `).join('')}
+  `;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/products/`);
+    allProducts = await res.json();
+    document.getElementById('productCount').textContent = allProducts.length;
+    renderProducts();
+  } catch(e) {
+    document.getElementById('productsGrid').innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;">Could not load products. Please try again.</p>';
   }
+}
 
   function renderStars(n) { return '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n)); }
 
