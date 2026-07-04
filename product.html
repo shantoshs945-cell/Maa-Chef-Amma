@@ -5,197 +5,239 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product — Maa Chef Amma</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
   <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{
-      --brand:#B5451B;--brand-light:#FAECE7;--brand-dark:#712B13;
-      --gold:#BA7517;--gold-light:#FAEEDA;
-      --premix:#3B6D11;--premix-light:#EAF3DE;--premix-dark:#27500A;
-      --text:#2C2C2A;--muted:#5F5E5A;--surface:#F1EFE8;--white:#fff;
-      --radius:12px;--radius-sm:8px;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold: #C9A025;
+      --gold-light: #E8BC45;
+      --gold-dim: #8A6B10;
+      --red: #8B1A1A;
+      --red-light: #C0392B;
+      --dark: #0A0A0A;
+      --dark-2: #111111;
+      --dark-3: #1A1A1A;
+      --dark-4: #222222;
+      --cream: #F5EDD6;
+      --muted: #888880;
+      --radius: 12px;
+      --radius-sm: 8px;
     }
-    body{font-family:'DM Sans',sans-serif;color:var(--text);background:#FAFAF8;}
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--dark); color: var(--cream); overflow-x: hidden; cursor: none; }
+
+    /* CURSOR */
+    .cursor { width: 10px; height: 10px; background: var(--gold); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transition: transform 0.1s; mix-blend-mode: difference; }
+    .cursor-ring { width: 36px; height: 36px; border: 1px solid var(--gold); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transition: transform 0.15s ease; opacity: 0.5; }
 
     /* NAV */
-    nav{background:var(--white);border-bottom:0.5px solid #D3D1C7;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;}
-    .logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--brand-dark);letter-spacing:0.5px;text-decoration:none;}
-    .logo span{color:var(--brand);font-size:13px;display:block;font-family:'DM Sans',sans-serif;font-weight:300;letter-spacing:2px;text-transform:uppercase;}
-    .nav-right{display:flex;align-items:center;gap:1.5rem;}
-    .nav-link{font-size:14px;color:var(--muted);cursor:pointer;transition:color .2s;text-decoration:none;}
-    .nav-link:hover{color:var(--brand);}
-    .back-btn{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);text-decoration:none;transition:color .2s;}
-    .back-btn:hover{color:var(--brand);}
+    nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1rem 3rem; height: 70px; background: rgba(10,10,10,0.92); backdrop-filter: blur(16px); border-bottom: 0.5px solid rgba(201,160,37,0.15); }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo img { width: 40px; height: 40px; border-radius: 50%; transition: transform 0.3s; }
+    .nav-logo:hover img { transform: rotate(10deg) scale(1.05); }
+    .nav-logo-text { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--cream); }
+    .nav-logo-text span { color: var(--gold); font-style: italic; }
+    .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-link { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .nav-link:hover { color: var(--gold); }
+    .back-link { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; border: 0.5px solid rgba(201,160,37,0.2); padding: 6px 14px; border-radius: var(--radius-sm); }
+    .back-link:hover { color: var(--gold); border-color: var(--gold); }
 
     /* BREADCRUMB */
-    .breadcrumb{padding:1rem 2rem;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);background:var(--white);border-bottom:0.5px solid #F1EFE8;}
-    .breadcrumb a{color:var(--muted);text-decoration:none;}
-    .breadcrumb a:hover{color:var(--brand);}
-    .breadcrumb span{color:var(--brand);}
+    .breadcrumb { padding: 0.9rem 3rem; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); background: var(--dark-2); border-bottom: 0.5px solid rgba(201,160,37,0.08); }
+    .breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--gold); }
+    .breadcrumb span { color: var(--gold); }
 
-    /* LOADING / ERROR */
-    .loading-state{text-align:center;padding:5rem 2rem;color:var(--muted);}
-    .loading-state i{font-size:48px;display:block;margin-bottom:1rem;opacity:0.3;}
+    /* LOADING */
+    .loading-state { text-align: center; padding: 6rem 2rem; color: var(--muted); }
+    .loading-state i { font-size: 48px; display: block; margin-bottom: 1rem; opacity: 0.2; }
 
     /* PRODUCT LAYOUT */
-    .product-page{max-width:1100px;margin:0 auto;padding:2.5rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
-    @media(max-width:768px){.product-page{grid-template-columns:1fr;gap:1.5rem;padding:1.5rem 1rem;}}
+    .product-page { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
 
-    /* PRODUCT IMAGE */
-    .product-visual{position:sticky;top:84px;}
-    .product-img-box{width:100%;aspect-ratio:1/1;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-    .product-img-box.pickle-bg{background:linear-gradient(135deg,#FAECE7,#F5D5C8);}
-    .product-img-box.premix-bg{background:linear-gradient(135deg,#EAF3DE,#D4E8C0);}
-    .product-img-box i{font-size:100px;opacity:0.3;}
-    .product-img-box.pickle-bg i{color:var(--brand-dark);}
-    .product-img-box.premix-bg i{color:var(--premix-dark);}
-    .product-badge-large{position:absolute;top:1.2rem;left:1.2rem;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;}
-    .badge-bestseller{background:var(--gold);color:white;}
-    .badge-new{background:var(--brand);color:white;}
+    /* PRODUCT VISUAL */
+    .product-visual { position: sticky; top: 90px; }
+    .product-img-box {
+      width: 100%; aspect-ratio: 1/1;
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      border: 0.5px solid rgba(201,160,37,0.15);
+      background: var(--dark-3);
+      transition: border-color 0.3s;
+    }
+    .product-img-box:hover { border-color: rgba(201,160,37,0.4); }
+    .product-img-box img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+    .product-img-box:hover img { transform: scale(1.04); }
+    .product-badge-large { position: absolute; top: 1.2rem; left: 1.2rem; padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 500; z-index: 2; }
+    .badge-bestseller { background: var(--gold); color: var(--dark); }
+    .badge-new { background: var(--red-light); color: white; }
 
-    /* THUMBNAIL ROW */
-    .thumb-row{display:flex;gap:10px;margin-top:1rem;}
-    .thumb{width:64px;height:64px;border-radius:var(--radius-sm);border:2px solid transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;}
-    .thumb.active{border-color:var(--brand);}
-    .thumb.pickle-bg{background:var(--brand-light);}
-    .thumb.premix-bg{background:var(--premix-light);}
-    .thumb i{font-size:24px;}
-    .thumb.pickle-bg i{color:var(--brand-dark);}
-    .thumb.premix-bg i{color:var(--premix-dark);}
+    /* GLOW EFFECT ON IMAGE */
+    .product-img-box::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(201,160,37,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
     /* PRODUCT INFO */
-    .product-info{display:flex;flex-direction:column;gap:1.2rem;}
-    .product-category-tag{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;}
-    .tag-pickle{background:var(--brand-light);color:var(--brand-dark);}
-    .tag-premix{background:var(--premix-light);color:var(--premix-dark);}
-    .product-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:600;color:var(--brand-dark);line-height:1.2;}
-    .product-rating-row{display:flex;align-items:center;gap:10px;}
-    .stars{color:var(--gold);font-size:14px;letter-spacing:2px;}
-    .review-count{font-size:13px;color:var(--muted);}
-    .product-price-row{display:flex;align-items:baseline;gap:10px;}
-    .price-main{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--brand-dark);}
-    .price-main.premix-price{color:var(--premix-dark);}
-    .price-mrp{font-size:16px;color:var(--muted);text-decoration:line-through;}
-    .price-off{font-size:13px;font-weight:500;color:#16A34A;background:#DCFCE7;padding:2px 8px;border-radius:20px;}
-    .product-desc{font-size:15px;color:var(--muted);line-height:1.7;}
-    
+    .product-info { display: flex; flex-direction: column; gap: 1.4rem; }
+    .product-category-tag { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; background: rgba(201,160,37,0.12); color: var(--gold); border: 0.5px solid rgba(201,160,37,0.3); }
+    .product-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 600; color: var(--cream); line-height: 1.15; }
+    .product-rating-row { display: flex; align-items: center; gap: 10px; }
+    .stars { color: var(--gold); font-size: 14px; letter-spacing: 2px; }
+    .review-count { font-size: 13px; color: var(--muted); }
+    .product-price-row { display: flex; align-items: baseline; gap: 12px; }
+    .price-main { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--gold); }
+    .price-mrp { font-size: 16px; color: var(--muted); text-decoration: line-through; }
+    .price-off { font-size: 12px; font-weight: 500; color: #16A34A; background: rgba(22,163,74,0.12); padding: 3px 10px; border-radius: 20px; border: 0.5px solid rgba(22,163,74,0.3); }
+    .product-desc { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 300; color: var(--muted); line-height: 1.8; white-space: pre-line; }
+
     /* META CHIPS */
-    .meta-chips{display:flex;gap:8px;flex-wrap:wrap;}
-    .meta-chip{display:flex;align-items:center;gap:6px;background:var(--surface);border-radius:var(--radius-sm);padding:8px 14px;font-size:13px;color:var(--text);}
-    .meta-chip i{font-size:16px;color:var(--brand);}
+    .meta-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .meta-chip { display: flex; align-items: center; gap: 6px; background: var(--dark-3); border: 0.5px solid rgba(201,160,37,0.15); border-radius: var(--radius-sm); padding: 7px 14px; font-size: 12px; color: var(--cream); transition: border-color 0.2s; }
+    .meta-chip:hover { border-color: rgba(201,160,37,0.4); }
+    .meta-chip i { font-size: 15px; color: var(--gold); }
 
     /* DIVIDER */
-    .divider{height:0.5px;background:#E8E6E0;}
+    .divider { height: 0.5px; background: rgba(201,160,37,0.12); }
 
     /* QUANTITY */
-    .qty-label{font-size:13px;font-weight:500;color:var(--muted);margin-bottom:8px;}
-    .qty-row{display:flex;align-items:center;gap:12px;}
-    .qty-ctrl{display:flex;align-items:center;gap:0;}
-    .qty-btn{width:36px;height:36px;border:0.5px solid #D3D1C7;background:var(--white);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .2s;}
-    .qty-btn:first-child{border-radius:var(--radius-sm) 0 0 var(--radius-sm);}
-    .qty-btn:last-child{border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
-    .qty-btn:hover{background:var(--brand-light);border-color:var(--brand);color:var(--brand);}
-    .qty-num{width:44px;height:36px;border:0.5px solid #D3D1C7;border-left:none;border-right:none;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;}
+    .qty-label { font-size: 11px; font-weight: 500; color: var(--muted); margin-bottom: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .qty-row { display: flex; align-items: center; gap: 16px; }
+    .qty-ctrl { display: flex; align-items: center; }
+    .qty-btn { width: 38px; height: 38px; border: 0.5px solid rgba(201,160,37,0.3); background: transparent; cursor: none; font-size: 18px; display: flex; align-items: center; justify-content: center; color: var(--cream); transition: all 0.2s; }
+    .qty-btn:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+    .qty-btn:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    .qty-btn:hover { background: rgba(201,160,37,0.1); border-color: var(--gold); color: var(--gold); }
+    .qty-num { width: 46px; height: 38px; border: 0.5px solid rgba(201,160,37,0.2); border-left: none; border-right: none; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 500; color: var(--cream); background: var(--dark-3); }
+    .total-label { font-size: 13px; color: var(--muted); }
+    .total-label strong { color: var(--gold); font-family: 'Playfair Display', serif; font-size: 1.1rem; }
 
     /* ACTION BUTTONS */
-    .action-btns{display:flex;flex-direction:column;gap:10px;}
-    .btn-add-cart{width:100%;background:var(--brand);color:white;border:none;border-radius:var(--radius-sm);padding:14px;font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s;}
-    .btn-add-cart:hover{background:var(--brand-dark);}
-    .btn-add-cart.premix-btn{background:var(--premix);}
-    .btn-add-cart.premix-btn:hover{background:var(--premix-dark);}
-    .btn-whatsapp{width:100%;background:#25D366;color:white;border:none;border-radius:var(--radius-sm);padding:14px;font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s;}
-    .btn-whatsapp:hover{opacity:0.9;}
+    .action-btns { display: flex; flex-direction: column; gap: 10px; }
+    .btn-add-cart { width: 100%; background: var(--gold); color: var(--dark); border: none; border-radius: var(--radius-sm); padding: 15px; font-size: 14px; font-weight: 500; cursor: none; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.25s; letter-spacing: 0.06em; }
+    .btn-add-cart:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .btn-whatsapp { width: 100%; background: transparent; color: #25D366; border: 1px solid rgba(37,211,102,0.4); border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 500; cursor: none; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.25s; }
+    .btn-whatsapp:hover { background: rgba(37,211,102,0.08); border-color: #25D366; transform: translateY(-2px); }
 
     /* FEATURES */
-    .features-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-    .feature-item{display:flex;align-items:flex-start;gap:10px;background:var(--surface);border-radius:var(--radius-sm);padding:12px;}
-    .feature-icon{width:32px;height:32px;border-radius:8px;background:var(--brand-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-    .feature-icon i{font-size:16px;color:var(--brand);}
-    .feature-icon.premix-icon{background:var(--premix-light);}
-    .feature-icon.premix-icon i{color:var(--premix-dark);}
-    .feature-title{font-size:12px;font-weight:500;color:var(--text);}
-    .feature-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+    .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .feature-item { display: flex; align-items: flex-start; gap: 10px; background: var(--dark-3); border: 0.5px solid rgba(201,160,37,0.1); border-radius: var(--radius-sm); padding: 14px; transition: border-color 0.2s, transform 0.2s; }
+    .feature-item:hover { border-color: rgba(201,160,37,0.3); transform: translateY(-2px); }
+    .feature-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(201,160,37,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .feature-icon i { font-size: 16px; color: var(--gold); }
+    .feature-title { font-size: 12px; font-weight: 500; color: var(--cream); }
+    .feature-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
     /* TABS */
-    .tabs{display:flex;gap:0;border-bottom:0.5px solid #D3D1C7;}
-    .tab-btn{padding:10px 20px;font-size:14px;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-0.5px;transition:all .2s;}
-    .tab-btn.active{color:var(--brand);border-bottom-color:var(--brand);}
-    .tab-content{display:none;padding-top:1.2rem;}
-    .tab-content.active{display:block;}
-    .ingredients-list{display:flex;flex-wrap:wrap;gap:8px;}
-    .ingredient-chip{background:var(--surface);border-radius:20px;padding:5px 14px;font-size:13px;color:var(--text);}
-    .how-to-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
-    .how-to-list li{display:flex;gap:12px;font-size:14px;color:var(--muted);line-height:1.6;}
-    .how-to-num{width:24px;height:24px;border-radius:50%;background:var(--brand-light);color:var(--brand-dark);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;margin-top:2px;}
+    .tabs { display: flex; border-bottom: 0.5px solid rgba(201,160,37,0.15); }
+    .tab-btn { padding: 10px 20px; font-size: 13px; font-weight: 500; color: var(--muted); background: none; border: none; cursor: none; font-family: 'DM Sans', sans-serif; border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: all 0.2s; letter-spacing: 0.06em; }
+    .tab-btn:hover { color: var(--cream); }
+    .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .tab-content { display: none; padding-top: 1.4rem; }
+    .tab-content.active { display: block; }
+    .ingredients-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .ingredient-chip { background: var(--dark-3); border: 0.5px solid rgba(201,160,37,0.15); border-radius: 20px; padding: 5px 14px; font-size: 12px; color: var(--cream); transition: border-color 0.2s; }
+    .ingredient-chip:hover { border-color: rgba(201,160,37,0.4); color: var(--gold); }
+    .how-to-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .how-to-list li { display: flex; gap: 12px; font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .how-to-num { width: 26px; height: 26px; border-radius: 50%; background: rgba(201,160,37,0.12); border: 0.5px solid rgba(201,160,37,0.3); color: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; margin-top: 2px; }
 
-    /* RELATED PRODUCTS */
-    .related-section{max-width:1100px;margin:0 auto;padding:0 2rem 3rem;}
-    .related-title{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--brand-dark);margin-bottom:1.2rem;}
-    .related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;}
-    .related-card{background:var(--white);border:0.5px solid #D3D1C7;border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s;text-decoration:none;display:block;}
-    .related-card:hover{transform:translateY(-3px);border-color:#B4B2A9;}
-    .related-img{height:120px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;}
-    .related-img.pickle-bg{background:var(--brand-light);}
-    .related-img.premix-bg{background:var(--premix-light);}
-    .related-info{padding:10px 12px;}
-    .related-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;}
-    .related-price{font-family:'Playfair Display',serif;font-size:16px;color:var(--brand-dark);}
+    /* RELATED */
+    .related-section { max-width: 1100px; margin: 0 auto; padding: 0 2rem 4rem; }
+    .related-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--cream); margin-bottom: 1.5rem; }
+    .related-title em { color: var(--gold); font-style: italic; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    .related-card { background: var(--dark-3); border: 0.5px solid rgba(201,160,37,0.12); border-radius: var(--radius); overflow: hidden; cursor: none; transition: transform 0.25s, border-color 0.25s; text-decoration: none; display: block; }
+    .related-card:hover { transform: translateY(-5px); border-color: rgba(201,160,37,0.4); }
+    .related-img { height: 130px; display: flex; align-items: center; justify-content: center; background: var(--dark-4); overflow: hidden; }
+    .related-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .related-card:hover .related-img img { transform: scale(1.05); }
+    .related-info { padding: 12px 14px; }
+    .related-name { font-size: 13px; font-weight: 500; color: var(--cream); margin-bottom: 4px; }
+    .related-price { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold); }
 
     /* REVIEWS */
-    .reviews-section{max-width:1100px;margin:0 auto;padding:0 2rem 3rem;}
-    .review-card{background:var(--white);border:0.5px solid #D3D1C7;border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;}
-    .reviewer{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-    .reviewer-avatar{width:38px;height:38px;border-radius:50%;background:var(--brand-light);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:14px;color:var(--brand-dark);}
-    .reviewer-name{font-size:14px;font-weight:500;}
-    .reviewer-date{font-size:11px;color:var(--muted);}
-    .review-text{font-size:13px;line-height:1.6;color:var(--muted);}
-
-    /* TOAST */
-    .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--brand-dark);color:#fff;padding:12px 24px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;z-index:400;transition:transform .3s;pointer-events:none;}
-    .toast.show{transform:translateX(-50%) translateY(0);}
+    .reviews-section { max-width: 1100px; margin: 0 auto; padding: 0 2rem 4rem; }
+    .review-card { background: var(--dark-3); border: 0.5px solid rgba(201,160,37,0.12); border-radius: var(--radius); padding: 1.4rem; margin-bottom: 1rem; transition: border-color 0.25s, transform 0.25s; }
+    .review-card:hover { border-color: rgba(201,160,37,0.35); transform: translateY(-3px); }
+    .reviewer { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .reviewer-avatar { width: 38px; height: 38px; border-radius: 50%; background: rgba(201,160,37,0.15); display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 14px; color: var(--gold); flex-shrink: 0; }
+    .reviewer-name { font-size: 14px; font-weight: 500; color: var(--cream); }
+    .reviewer-date { font-size: 11px; color: var(--muted); }
+    .review-text { font-size: 13px; line-height: 1.6; color: var(--muted); font-style: italic; }
 
     /* FOOTER */
-    footer{background:var(--brand-dark);color:rgba(255,255,255,0.8);padding:2rem;display:flex;justify-content:space-between;align-items:center;margin-top:2rem;}
-    .footer-brand{font-family:'Playfair Display',serif;font-size:18px;color:#fff;margin-bottom:4px;}
-    .footer-tagline{font-size:12px;opacity:.6;}
-    .footer-contact{font-size:13px;text-align:right;}
-    .footer-contact a{color:#FAC775;text-decoration:none;}
+    footer { background: var(--dark-2); border-top: 0.5px solid rgba(201,160,37,0.12); padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo { display: flex; align-items: center; gap: 10px; }
+    .footer-logo img { width: 36px; height: 36px; border-radius: 50%; }
+    .footer-brand { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--cream); }
+    .footer-brand span { color: var(--gold); font-style: italic; }
+    .footer-tagline { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .footer-contact { font-size: 13px; text-align: right; }
+    .footer-contact a { color: var(--gold); text-decoration: none; transition: color 0.2s; }
+    .footer-contact a:hover { color: var(--gold-light); }
 
-    /* WhatsApp Float */
-    .whatsapp-float{position:fixed;bottom:2rem;right:2rem;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:0.6rem;}
-    .whatsapp-float-btn{width:54px;height:54px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.4);text-decoration:none;transition:transform .2s;}
-    .whatsapp-float-btn:hover{transform:scale(1.1);}
-    .wa-pulse{position:absolute;width:54px;height:54px;border-radius:50%;background:#25D366;opacity:0.4;animation:wp-pulse 2s ease-out infinite;}
-    @keyframes wp-pulse{0%{transform:scale(1);opacity:0.4;}100%{transform:scale(1.7);opacity:0;}}
+    /* WHATSAPP FLOAT */
+    .whatsapp-float { position: fixed; bottom: 2rem; right: 2rem; z-index: 999; display: flex; flex-direction: column; align-items: flex-end; gap: 0.6rem; }
+    .whatsapp-float-btn { width: 54px; height: 54px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.35); text-decoration: none; transition: transform 0.2s; position: relative; overflow: hidden; }
+    .whatsapp-float-btn:hover { transform: scale(1.1); }
+    .wa-pulse { position: absolute; width: 54px; height: 54px; border-radius: 50%; background: #25D366; opacity: 0.4; animation: wp-pulse 2s ease-out infinite; }
+    @keyframes wp-pulse { 0% { transform: scale(1); opacity: 0.4; } 100% { transform: scale(1.7); opacity: 0; } }
 
-    @media(max-width:480px){
-      .features-grid{grid-template-columns:1fr;}
-      .product-title{font-size:1.5rem;}
-      .price-main{font-size:1.8rem;}
-      footer{flex-direction:column;gap:1rem;text-align:center;}
-      .footer-contact{text-align:center;}
+    /* TOAST */
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--dark-3); color: var(--cream); padding: 12px 24px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; z-index: 400; transition: transform 0.3s; pointer-events: none; border: 0.5px solid rgba(201,160,37,0.25); }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* SECTION DIVIDER */
+    .section-divider { height: 0.5px; background: rgba(201,160,37,0.08); max-width: 1100px; margin: 0 auto 0; }
+
+    /* MOBILE */
+    @media(max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .breadcrumb { padding: 0.8rem 1.5rem; }
+      .product-page { grid-template-columns: 1fr; gap: 2rem; padding: 1.5rem 1.2rem; }
+      .product-visual { position: static; }
+      .product-title { font-size: 1.6rem; }
+      .price-main { font-size: 2rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; padding: 1.5rem; }
+      .footer-contact { text-align: center; }
+      .related-section, .reviews-section { padding: 0 1.2rem 3rem; }
     }
   </style>
 </head>
 <body>
 
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
 <!-- NAV -->
 <nav>
-  <a href="index.html" class="logo">Maa Chef Amma<span>Homemade Pickles & Premix Powders</span></a>
+  <a href="index.html" class="nav-logo">
+    <img src="logo.png" alt="Maa Chef Amma">
+    <div class="nav-logo-text">Maa Chef <span>Amma</span></div>
+  </a>
   <div class="nav-right">
     <a href="index.html#products" class="nav-link">Products</a>
     <a href="index.html#reviews" class="nav-link">Reviews</a>
     <a href="tel:+919989340476" class="nav-link">Contact</a>
+    <a href="index.html" class="back-link"><i class="ti ti-arrow-left" style="font-size:14px;"></i> Back</a>
   </div>
 </nav>
 
 <!-- BREADCRUMB -->
 <div class="breadcrumb">
   <a href="index.html">Home</a>
-  <i class="ti ti-chevron-right" style="font-size:12px;"></i>
+  <i class="ti ti-chevron-right" style="font-size:11px;"></i>
   <a href="index.html#products">Products</a>
-  <i class="ti ti-chevron-right" style="font-size:12px;"></i>
+  <i class="ti ti-chevron-right" style="font-size:11px;"></i>
   <span id="breadcrumbName">Loading...</span>
 </div>
 
@@ -208,34 +250,41 @@
 </div>
 
 <!-- RELATED PRODUCTS -->
-<div class="related-section" id="relatedSection" style="display:none;">
-  <div class="related-title">You Might Also Like</div>
+<div class="section-divider"></div>
+<div class="related-section" id="relatedSection" style="display:none;padding-top:3rem;">
+  <div class="related-title">You Might Also <em>Like</em></div>
   <div class="related-grid" id="relatedGrid"></div>
 </div>
 
 <!-- REVIEWS -->
-<div class="reviews-section" id="reviewsSection" style="display:none;">
-  <div class="related-title">Customer Reviews</div>
+<div class="section-divider"></div>
+<div class="reviews-section" id="reviewsSection" style="display:none;padding-top:3rem;">
+  <div class="related-title">Customer <em>Reviews</em></div>
   <div id="reviewsList"></div>
 </div>
 
+<!-- FOOTER -->
 <footer>
   <div>
-    <div class="footer-brand">Maa Chef Amma</div>
-    <div class="footer-tagline">Homemade • Traditional • Delicious</div>
-    <div style="font-size:12px;margin-top:6px;opacity:.5;">Kakinada, Andhra Pradesh, India</div>
+    <div class="footer-logo">
+      <img src="logo.png" alt="Logo">
+      <div>
+        <div class="footer-brand">Maa Chef <span>Amma</span></div>
+        <div class="footer-tagline">Homemade • Traditional • Delicious</div>
+      </div>
+    </div>
   </div>
   <div class="footer-contact">
-    <div style="margin-bottom:4px;"><i class="ti ti-phone" style="font-size:13px;margin-right:4px;"></i><a href="tel:+919989340476">+91 99893 40476</a></div>
-    <div><i class="ti ti-brand-whatsapp" style="font-size:13px;margin-right:4px;"></i><a href="https://wa.me/919989340476" target="_blank">WhatsApp Order</a></div>
+    <div style="margin-bottom:6px;"><i class="ti ti-phone" style="font-size:13px;margin-right:4px;color:var(--gold);"></i><a href="tel:+919989340476">+91 99893 40476</a></div>
+    <div><i class="ti ti-brand-whatsapp" style="font-size:13px;margin-right:4px;color:#25D366;"></i><a href="https://wa.me/919989340476" target="_blank">WhatsApp Order</a></div>
   </div>
 </footer>
 
-<!-- WhatsApp Float -->
+<!-- WHATSAPP FLOAT -->
 <div class="whatsapp-float">
   <a class="whatsapp-float-btn" href="https://wa.me/919989340476" target="_blank" rel="noopener noreferrer">
     <div class="wa-pulse"></div>
-    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" width="26" height="26" style="fill:white;flex-shrink:0;position:relative;z-index:1;">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" width="26" height="26" style="fill:white;position:relative;z-index:1;">
       <path d="M16 1C7.716 1 1 7.716 1 16c0 2.628.668 5.1 1.835 7.261L1 31l7.95-1.812A14.94 14.94 0 0016 31c8.284 0 15-6.716 15-15S24.284 1 16 1zm0 27.2a12.14 12.14 0 01-6.19-1.694l-.444-.264-4.717 1.075 1.121-4.6-.29-.473A12.16 12.16 0 013.8 16C3.8 9.26 9.26 3.8 16 3.8S28.2 9.26 28.2 16 22.74 28.2 16 28.2zm6.67-9.104c-.366-.183-2.163-1.067-2.498-1.189-.335-.12-.579-.183-.823.183-.244.366-.944 1.189-1.157 1.433-.213.244-.427.274-.793.091-.366-.183-1.545-.569-2.943-1.816-1.088-.97-1.822-2.168-2.035-2.534-.213-.366-.023-.563.16-.745.164-.163.366-.427.549-.64.183-.213.244-.366.366-.61.122-.244.061-.457-.03-.64-.092-.183-.824-1.983-1.128-2.716-.297-.713-.598-.616-.823-.628l-.701-.012c-.244 0-.64.091-.975.457-.335.366-1.28 1.25-1.28 3.048s1.311 3.535 1.494 3.779c.183.244 2.58 3.937 6.252 5.522.874.377 1.556.602 2.087.77.877.279 1.676.24 2.308.145.704-.104 2.163-.883 2.468-1.736.305-.853.305-1.585.213-1.736-.09-.152-.334-.244-.7-.427z"/>
     </svg>
   </a>
@@ -246,26 +295,34 @@
 <script>
   const API_BASE = 'https://maa-chef-amma.onrender.com';
   const WA_NUMBER = '919989340476';
-  let product = null;
-  let allProducts = [];
-  let qty = 1;
+  let product = null, allProducts = [], qty = 1;
 
-  // Get product ID from URL
   const params = new URLSearchParams(window.location.search);
   const productId = params.get('id');
-
-  // Redirect if no ID
   if (!productId) window.location.href = 'index.html';
 
-  // Spice level info
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+  });
+  function animRing() {
+    rx += (mx - rx) * 0.14; ry += (my - ry) * 0.14;
+    cursorRing.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
   const spiceInfo = {
-    'Hot': { level: 3, color: '#EF4444', label: 'Hot 🌶️🌶️🌶️' },
-    'Medium': { level: 2, color: '#F97316', label: 'Medium 🌶️🌶️' },
-    'Mild': { level: 1, color: '#EAB308', label: 'Mild 🌶️' },
-    '': { level: 0, color: '#6B7280', label: 'No Spice' }
+    'Hot': { label: 'Hot 🌶️🌶️🌶️' },
+    'Medium': { label: 'Medium 🌶️🌶️' },
+    'Mild': { label: 'Mild 🌶️' },
+    '': { label: 'No Spice' }
   };
 
-  // Ingredients per product (can be expanded)
   const ingredientMap = {
     'chicken': ['Fresh Chicken', 'Red Chili', 'Turmeric', 'Mustard Seeds', 'Sesame Oil', 'Garlic', 'Ginger', 'Curry Leaves', 'Salt', 'Vinegar'],
     'premix': ['Rice', 'Urad Dal', 'Fenugreek Seeds', 'Salt', 'Natural Flavors']
@@ -288,10 +345,7 @@
     ]
   };
 
-  function renderStars(n) {
-    return '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
-  }
-
+  function renderStars(n) { return '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n)); }
   function getDiscount(price, mrp) {
     if (!mrp || mrp <= price) return null;
     return Math.round(((mrp - price) / mrp) * 100);
@@ -299,8 +353,6 @@
 
   function buildProductHTML(p) {
     const isPremix = p.category === 'premix';
-    const bgClass = isPremix ? 'premix-bg' : 'pickle-bg';
-    const tagClass = isPremix ? 'tag-premix' : 'tag-pickle';
     const discount = getDiscount(p.price, p.mrp);
     const spice = spiceInfo[p.spice] || spiceInfo[''];
     const ingredients = ingredientMap[p.category] || [];
@@ -308,22 +360,20 @@
 
     return `
     <div class="product-page">
-
       <!-- LEFT: Visual -->
       <div class="product-visual">
-       <div class="product-img-box ${p.image_url ? '' : bgClass}" id="mainImgBox">
-        ${p.badge_text ? `<span class="product-badge-large ${p.badge === 'bestseller' ? 'badge-bestseller' : 'badge-new'}">${p.badge_text}</span>` : ''}
-        ${p.image_url 
-         ? `<img src="${p.image_url}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);">` 
-         : `<i class="ti ${p.icon || 'ti-drumstick'}" style="font-size:120px;opacity:0.25;color:${isPremix ? 'var(--premix-dark)' : 'var(--brand-dark)'}"></i>`
-        }
+        <div class="product-img-box" id="mainImgBox">
+          ${p.badge_text ? `<span class="product-badge-large ${p.badge === 'bestseller' ? 'badge-bestseller' : 'badge-new'}">${p.badge_text}</span>` : ''}
+          ${p.image_url
+            ? `<img src="${p.image_url}" alt="${p.name}">`
+            : `<i class="ti ${p.icon || 'ti-drumstick'}" style="font-size:100px;opacity:0.15;color:var(--gold);"></i>`
+          }
+        </div>
       </div>
 
       <!-- RIGHT: Info -->
       <div class="product-info">
-        <div>
-          <span class="product-category-tag ${tagClass}">${isPremix ? 'Premix Powder' : 'Chicken Pickle'}</span>
-        </div>
+        <span class="product-category-tag">${isPremix ? 'Premix Powder' : 'Chicken Pickle'}</span>
 
         <h1 class="product-title">${p.name}</h1>
 
@@ -333,7 +383,7 @@
         </div>
 
         <div class="product-price-row">
-          <span class="price-main ${isPremix ? 'premix-price' : ''}">₹${p.price}</span>
+          <span class="price-main">₹${p.price}</span>
           ${p.mrp ? `<span class="price-mrp">₹${p.mrp}</span>` : ''}
           ${discount ? `<span class="price-off">${discount}% off</span>` : ''}
         </div>
@@ -341,10 +391,10 @@
         <p class="product-desc">${p.description}</p>
 
         <div class="meta-chips">
-          <div class="meta-chip"><i class="ti ti-weight"></i> ${p.weight}</div>
-          ${p.spice ? `<div class="meta-chip"><i class="ti ti-flame"></i> ${spice.label}</div>` : ''}
-          <div class="meta-chip"><i class="ti ti-leaf"></i> No Preservatives</div>
-          <div class="meta-chip"><i class="ti ti-home"></i> Homemade</div>
+          <div class="meta-chip"><i class="ti ti-weight"></i>${p.weight}</div>
+          ${p.spice ? `<div class="meta-chip"><i class="ti ti-flame"></i>${spice.label}</div>` : ''}
+          <div class="meta-chip"><i class="ti ti-leaf"></i>No Preservatives</div>
+          <div class="meta-chip"><i class="ti ti-home"></i>Homemade</div>
         </div>
 
         <div class="divider"></div>
@@ -358,17 +408,17 @@
               <div class="qty-num" id="qtyDisplay">1</div>
               <button class="qty-btn" onclick="changeQty(1)">+</button>
             </div>
-            <span style="font-size:13px;color:var(--muted);">Total: <strong style="color:var(--brand-dark);" id="totalPrice">₹${p.price}</strong></span>
+            <span class="total-label">Total: <strong id="totalPrice">₹${p.price}</strong></span>
           </div>
         </div>
 
         <!-- Buttons -->
         <div class="action-btns">
-          <button class="btn-add-cart ${isPremix ? 'premix-btn' : ''}" onclick="addToCartAndGo()">
+          <button class="btn-add-cart" onclick="addToCartAndGo()">
             <i class="ti ti-shopping-cart"></i> Add to Cart & Order
           </button>
           <button class="btn-whatsapp" onclick="orderWhatsApp()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
             Order via WhatsApp
           </button>
         </div>
@@ -378,19 +428,19 @@
         <!-- Features -->
         <div class="features-grid">
           <div class="feature-item">
-            <div class="feature-icon ${isPremix ? 'premix-icon' : ''}"><i class="ti ti-truck-delivery"></i></div>
+            <div class="feature-icon"><i class="ti ti-truck-delivery"></i></div>
             <div><div class="feature-title">Pan-India Delivery</div><div class="feature-sub">Ships within 2-3 days</div></div>
           </div>
           <div class="feature-item">
-            <div class="feature-icon ${isPremix ? 'premix-icon' : ''}"><i class="ti ti-shield-check"></i></div>
+            <div class="feature-icon"><i class="ti ti-shield-check"></i></div>
             <div><div class="feature-title">FSSAI Certified</div><div class="feature-sub">100% safe & hygienic</div></div>
           </div>
           <div class="feature-item">
-            <div class="feature-icon ${isPremix ? 'premix-icon' : ''}"><i class="ti ti-refresh"></i></div>
+            <div class="feature-icon"><i class="ti ti-refresh"></i></div>
             <div><div class="feature-title">Easy Returns</div><div class="feature-sub">7-day return policy</div></div>
           </div>
           <div class="feature-item">
-            <div class="feature-icon ${isPremix ? 'premix-icon' : ''}"><i class="ti ti-heart"></i></div>
+            <div class="feature-icon"><i class="ti ti-heart"></i></div>
             <div><div class="feature-title">Made with Love</div><div class="feature-sub">Traditional recipe</div></div>
           </div>
         </div>
@@ -424,7 +474,6 @@
             </ul>
           </div>
         </div>
-
       </div>
     </div>`;
   }
@@ -448,10 +497,7 @@
   }
 
   function addToCartAndGo() {
-    // Store cart item in sessionStorage and go back to index
-    const cartItem = { ...product, qty };
-    const existing = JSON.parse(sessionStorage.getItem('pendingCartItem') || 'null');
-    sessionStorage.setItem('pendingCartItem', JSON.stringify(cartItem));
+    sessionStorage.setItem('pendingCartItem', JSON.stringify({ ...product, qty }));
     showToast(`${product.name} added to cart!`);
     setTimeout(() => { window.location.href = 'index.html?addToCart=' + product.id + '&qty=' + qty; }, 800);
   }
@@ -462,12 +508,15 @@
     document.getElementById('relatedSection').style.display = 'block';
     document.getElementById('relatedGrid').innerHTML = related.map(p => `
       <a href="product.html?id=${p.id}" class="related-card">
-        <div class="related-img ${p.category === 'premix' ? 'premix-bg' : 'pickle-bg'}">
-          <i class="ti ${p.icon}" style="font-size:40px;color:${p.category === 'premix' ? 'var(--premix-dark)' : 'var(--brand-dark)'};opacity:0.4;"></i>
+        <div class="related-img">
+          ${p.image_url
+            ? `<img src="${p.image_url}" alt="${p.name}">`
+            : `<i class="ti ${p.icon}" style="font-size:40px;color:var(--gold);opacity:0.3;"></i>`
+          }
         </div>
         <div class="related-info">
           <div class="related-name">${p.name}</div>
-          <div class="related-price ${p.category === 'premix' ? 'premix-price' : ''}">₹${p.price}</div>
+          <div class="related-price">₹${p.price}</div>
         </div>
       </a>
     `).join('');
@@ -482,7 +531,7 @@
           <div class="reviewer-avatar">${r.initials}</div>
           <div><div class="reviewer-name">${r.reviewer_name}</div><div class="reviewer-date">${r.date_label}</div></div>
         </div>
-        <div class="stars" style="font-size:13px;margin-bottom:6px;">${renderStars(r.stars)}</div>
+        <div class="stars" style="font-size:13px;margin-bottom:8px;">${renderStars(r.stars)}</div>
         <div class="review-text">"${r.review_text}"</div>
       </div>
     `).join('');
@@ -490,12 +539,10 @@
 
   function showToast(msg) {
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
+    t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-  // Load product + all products + reviews
   async function init() {
     try {
       const [productsRes, reviewsRes] = await Promise.all([
@@ -504,25 +551,20 @@
       ]);
       allProducts = await productsRes.json();
       const reviews = await reviewsRes.json();
-
       product = allProducts.find(p => p.id === parseInt(productId));
+
       if (!product) {
         document.getElementById('pageContent').innerHTML = `
           <div class="loading-state">
             <i class="ti ti-alert-circle"></i>
-            Product not found. <a href="index.html" style="color:var(--brand);">Go back</a>
+            Product not found. <a href="index.html" style="color:var(--gold);">Go back</a>
           </div>`;
         return;
       }
 
-      // Update page title & breadcrumb
       document.title = `${product.name} — Maa Chef Amma`;
       document.getElementById('breadcrumbName').textContent = product.name;
-
-      // Render product
       document.getElementById('pageContent').innerHTML = buildProductHTML(product);
-
-      // Render related & reviews
       renderRelated(allProducts);
       renderReviews(reviews);
 
