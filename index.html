@@ -534,16 +534,15 @@
       <div class="section-eyebrow">Our Range</div>
       <h2 class="section-title">Signature <em>Products</em></h2>
     </div>
-    <div class="filter-bar reveal">
-      <span style="font-size:13px;color:var(--muted);font-weight:500;">Filter:</span>
-      <button class="filter-btn active" onclick="filterProducts('all',this)">All</button>
-      <button class="filter-btn" onclick="filterProducts('chicken',this)">Chicken Pickles</button>
-      <button class="filter-btn" onclick="filterProducts('premix',this)">Premix Powders</button>
-      <div class="search-box">
-        <i class="ti ti-search"></i>
-        <input type="text" id="searchInput" placeholder="Search products..." oninput="searchProducts(this.value)">
-      </div>
-    </div>
+    <div class="filter-bar reveal" id="filterBar">
+  <span style="font-size:13px;color:var(--muted);font-weight:500;">Filter:</span>
+  <button class="filter-btn active" onclick="filterProducts('all',this)">All</button>
+  <!-- categories load here dynamically -->
+  <div class="search-box">
+    <i class="ti ti-search"></i>
+    <input type="text" id="searchInput" placeholder="Search products..." oninput="searchProducts(this.value)">
+  </div>
+</div>
     <div class="products-grid" id="productsGrid">
       <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted);">Loading products...</div>
     </div>
@@ -981,9 +980,30 @@
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
+
+  // ── LOAD FILTER CATEGORIES ──
+    async function loadFilterCategories() {
+    try {
+      const res = await fetch(`${API_BASE}/api/categories/`);
+       const categories = await res.json();
+       const bar = document.getElementById('filterBar');
+        const searchBox = bar.querySelector('.search-box');
+ 
+         categories.forEach(c => {
+         const btn = document.createElement('button');
+         btn.className = 'filter-btn';
+         btn.textContent = c.name;
+         btn.onclick = function() { filterProducts(c.slug, this); };
+         bar.insertBefore(btn, searchBox);
+        });
+       } catch(e) {
+       console.error('Failed to load categories:', e);
+     }
+   }
   // ── INIT ──
   loadProducts();
   loadReviews();
+  loadFilterCategories();
 </script>
 </body>
 </html>
