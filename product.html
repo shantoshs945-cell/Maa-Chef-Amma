@@ -373,7 +373,7 @@
 
       <!-- RIGHT: Info -->
       <div class="product-info">
-        <span class="product-category-tag">${isPremix ? 'Premix Powder' : 'Chicken Pickle'}</span>
+        <span class="product-category-tag">${p.category_name || p.category}</span>
 
         <h1 class="product-title">${p.name}</h1>
 
@@ -544,38 +544,48 @@
   }
 
   async function init() {
-    try {
-      const [productsRes, reviewsRes] = await Promise.all([
-        fetch(`${API_BASE}/api/products/`),
-        fetch(`${API_BASE}/api/reviews/`)
-      ]);
-      allProducts = await productsRes.json();
-      const reviews = await reviewsRes.json();
-      product = allProducts.find(p => p.id === parseInt(productId));
+  try {
+    const [productsRes, reviewsRes, categoriesRes] = await Promise.all([
+      fetch(`${API_BASE}/api/products/`),
+      fetch(`${API_BASE}/api/reviews/`),
+      fetch(`${API_BASE}/api/categories/`)
+    ]);
+    allProducts = await productsRes.json();
+    const reviews = await reviewsRes.json();
+    const categories = await categoriesRes.json();
 
-      if (!product) {
-        document.getElementById('pageContent').innerHTML = `
-          <div class="loading-state">
-            <i class="ti ti-alert-circle"></i>
-            Product not found. <a href="index.html" style="color:var(--gold);">Go back</a>
-          </div>`;
-        return;
-      }
+    // Map slug → name
+    const catMap = {};
+    categories.forEach(c => catMap[c.slug] = c.name);
 
-      document.title = `${product.name} — Maa Chef Amma`;
-      document.getElementById('breadcrumbName').textContent = product.name;
-      document.getElementById('pageContent').innerHTML = buildProductHTML(product);
-      renderRelated(allProducts);
-      renderReviews(reviews);
+    product = allProducts.find(p => p.id === parseInt(productId));
 
-    } catch(e) {
+    if (!product) {
       document.getElementById('pageContent').innerHTML = `
         <div class="loading-state">
-          <i class="ti ti-wifi-off"></i>
-          Could not load product. Please check your connection.
+          <i class="ti ti-alert-circle"></i>
+          Product not found. <a href="index.html" style="color:var(--gold);">Go back</a>
         </div>`;
+      return;
     }
+
+    // Add human-readable category name
+    product.category_name = catMap[product.category] || product.category;
+
+    document.title = `${product.name} — Maa Chef Amma`;
+    document.getElementById('breadcrumbName').textContent = product.name;
+    document.getElementById('pageContent').innerHTML = buildProductHTML(product);
+    renderRelated(allProducts);
+    renderReviews(reviews);
+
+  } catch(e) {
+    document.getElementById('pageContent').innerHTML = `
+      <div class="loading-state">
+        <i class="ti ti-wifi-off"></i>
+        Could not load product. Please check your connection.
+      </div>`;
   }
+}
 
   init();
 </script>
