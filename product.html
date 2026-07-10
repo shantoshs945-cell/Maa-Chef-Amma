@@ -323,28 +323,6 @@
     '': { label: 'No Spice' }
   };
 
-  const ingredientMap = {
-    'chicken': ['Fresh Chicken', 'Red Chili', 'Turmeric', 'Mustard Seeds', 'Sesame Oil', 'Garlic', 'Ginger', 'Curry Leaves', 'Salt', 'Vinegar'],
-    'premix': ['Rice', 'Urad Dal', 'Fenugreek Seeds', 'Salt', 'Natural Flavors']
-  };
-
-  const howToMap = {
-    'chicken': [
-      'Best served as a side dish with hot rice or roti.',
-      'Can be mixed with curd rice for a delicious combination.',
-      'Use a clean, dry spoon each time to maintain freshness.',
-      'Store in a cool, dry place. Refrigerate after opening.',
-      'Consume within 3 months of opening for best taste.'
-    ],
-    'premix': [
-      'Take required quantity of premix powder in a bowl.',
-      'Add water gradually and mix to get a smooth batter.',
-      'Let the batter ferment for 6-8 hours.',
-      'Pour into idly moulds and steam for 10-12 minutes.',
-      'Serve hot with sambar and chutney.'
-    ]
-  };
-
   function renderStars(n) { return '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n)); }
   function getDiscount(price, mrp) {
     if (!mrp || mrp <= price) return null;
@@ -355,8 +333,6 @@
     const isPremix = p.category === 'premix';
     const discount = getDiscount(p.price, p.mrp);
     const spice = spiceInfo[p.spice] || spiceInfo[''];
-    const ingredients = ingredientMap[p.category] || [];
-    const howTo = howToMap[p.category] || [];
 
     return `
     <div class="product-page">
@@ -451,24 +427,29 @@
             <button class="tab-btn" onclick="switchTab('storage', this)">Storage</button>
           </div>
           <div class="tab-content active" id="tab-ingredients">
-            <div class="ingredients-list">
-              ${ingredients.map(i => `<span class="ingredient-chip">${i}</span>`).join('')}
-            </div>
-          </div>
-          <div class="tab-content" id="tab-howto">
-            <ul class="how-to-list">
-              ${howTo.map((s, i) => `<li><div class="how-to-num">${i+1}</div><div>${s}</div></li>`).join('')}
-            </ul>
-          </div>
-          <div class="tab-content" id="tab-storage">
-            <ul class="how-to-list">
-              <li><div class="how-to-num">1</div><div>Store in a cool, dry place away from direct sunlight.</div></li>
-              <li><div class="how-to-num">2</div><div>Always use a clean, dry spoon to avoid contamination.</div></li>
-              <li><div class="how-to-num">3</div><div>Refrigerate after opening for extended freshness.</div></li>
-              <li><div class="how-to-num">4</div><div>Best consumed within 3 months of opening.</div></li>
-              <li><div class="how-to-num">5</div><div>Keep the lid tightly closed when not in use.</div></li>
-            </ul>
-          </div>
+  <div class="ingredients-list">
+    ${p.ingredients
+      ? p.ingredients.split(',').map(i => `<span class="ingredient-chip">${i.trim()}</span>`).join('')
+      : '<p style="color:var(--muted);font-size:13px;">No ingredients listed.</p>'
+    }
+  </div>
+</div>
+<div class="tab-content" id="tab-howto">
+  <ul class="how-to-list">
+    ${p.how_to_use
+      ? p.how_to_use.split('\n').filter(s => s.trim()).map((s, i) => `<li><div class="how-to-num">${i+1}</div><div>${s.trim()}</div></li>`).join('')
+      : '<p style="color:var(--muted);font-size:13px;">No instructions listed.</p>'
+    }
+   </ul>
+   </div>
+    <div class="tab-content" id="tab-storage">
+     <ul class="how-to-list">
+      ${p.storage_info
+          ? p.storage_info.split('\n').filter(s => s.trim()).map((s, i) => `<li><div class="how-to-num">${i+1}</div><div>${s.trim()}</div></li>`).join('')
+           : '<p style="color:var(--muted);font-size:13px;">No storage info listed.</p>'
+       }
+       </ul>
+       </div>
         </div>
       </div>
     </div>`;

@@ -20,6 +20,9 @@ class Product(BaseModel):
     review_count: Optional[int] = 0
     is_active: Optional[bool] = True
     image_url: Optional[str] = None
+    ingredients: Optional[str] = ""
+    how_to_use: Optional[str] = ""
+    storage_info: Optional[str] = ""
 
 @router.get("/")
 def get_products():

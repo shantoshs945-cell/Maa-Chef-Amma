@@ -9,14 +9,17 @@
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     :root{
-      --brand:#B5451B;--brand-light:#FAECE7;--brand-dark:#712B13;
+      --brand:#cf7f24;--brand-light:#FAECE7;--brand-dark:#712B13;
       --premix:#3B6D11;--premix-light:#EAF3DE;--premix-dark:#27500A;
       --gold:#BA7517;
       --text:#2C2C2A;--muted:#5F5E5A;--surface:#F1EFE8;--white:#fff;
       --radius:12px;--radius-sm:8px;
       --sidebar:240px;
     }
-    body{font-family:'DM Sans',sans-serif;color:var(--text);background:#F5F4F0;min-height:100vh;}
+    body{
+      font-family:'DM Sans',sans-serif;
+      color:var(--text);background:#F5F4F0;min-height:100vh;
+    }
 
     /* LOGIN */
     .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--brand-dark),var(--brand));}
@@ -261,6 +264,18 @@
       <div class="form-group"><label>Badge (optional)</label><input type="text" id="pBadge" placeholder="bestseller"></div>
       <div class="form-group"><label>Badge Text</label><input type="text" id="pBadgeText" placeholder="Bestseller"></div>
     </div>
+    <div class="form-group">
+  <label>Ingredients <span style="font-size:11px;color:var(--muted);">(comma separated)</span></label>
+  <textarea id="pIngredients" rows="2" style="resize:none;" placeholder="e.g. Fresh Chicken, Red Chili, Turmeric, Garlic"></textarea>
+</div>
+<div class="form-group">
+  <label>How to Use <span style="font-size:11px;color:var(--muted);">(one per line)</span></label>
+  <textarea id="pHowToUse" rows="3" style="resize:none;" placeholder="e.g. Best served with hot rice&#10;Use a clean dry spoon each time"></textarea>
+</div>
+<div class="form-group">
+  <label>Storage Info <span style="font-size:11px;color:var(--muted);">(one per line)</span></label>
+  <textarea id="pStorageInfo" rows="3" style="resize:none;" placeholder="e.g. Store in a cool dry place&#10;Refrigerate after opening"></textarea>
+</div>
     <div class="modal-btns">
       <button class="modal-cancel" onclick="closeProductModal()">Cancel</button>
       <button class="modal-submit" onclick="saveProduct()">Save Product</button>
@@ -444,24 +459,28 @@
 
   let editingProductId = null;
   function openProductModal(p = null) {
-    editingProductId = null;
-    document.getElementById('productModalTitle').textContent = 'Add Product';
-    document.getElementById('pName').value = '';
-    document.getElementById('pDesc').value = '';
-    document.getElementById('pCategory').value = 'chicken';
-    document.getElementById('pSpice').value = '';
-    document.getElementById('pPrice').value = '';
-    document.getElementById('pMrp').value = '';
-    document.getElementById('pWeight').value = '';
-    document.getElementById('pIcon').value = 'ti-drumstick';
-    document.getElementById('pBadge').value = '';
-    document.getElementById('pImageUrl').value = '';
-document.getElementById('previewImg').src = '';
-document.getElementById('imagePreview').style.display = 'none';
-document.getElementById('uploadPlaceholder').style.display = 'block';
-document.getElementById('uploadProgress').style.display = 'none';
-document.getElementById('productModal').classList.add('open');
-  }
+  editingProductId = null;
+  document.getElementById('productModalTitle').textContent = 'Add Product';
+  document.getElementById('pName').value = '';
+  document.getElementById('pDesc').value = '';
+  document.getElementById('pCategory').value = 'chicken';
+  document.getElementById('pSpice').value = '';
+  document.getElementById('pPrice').value = '';
+  document.getElementById('pMrp').value = '';
+  document.getElementById('pWeight').value = '';
+  document.getElementById('pIcon').value = 'ti-drumstick';
+  document.getElementById('pBadge').value = '';
+  document.getElementById('pBadgeText').value = '';
+  document.getElementById('pImageUrl').value = '';
+  document.getElementById('previewImg').src = '';
+  document.getElementById('imagePreview').style.display = 'none';
+  document.getElementById('uploadPlaceholder').style.display = 'block';
+  document.getElementById('uploadProgress').style.display = 'none';
+  document.getElementById('pIngredients').value = '';
+  document.getElementById('pHowToUse').value = '';
+  document.getElementById('pStorageInfo').value = '';
+  document.getElementById('productModal').classList.add('open');
+}
 
   async function editProduct(id) {
     const res = await fetch(`${API_BASE}/api/products/`);
@@ -480,6 +499,9 @@ document.getElementById('productModal').classList.add('open');
     document.getElementById('pIcon').value = p.icon;
     document.getElementById('pBadge').value = p.badge;
     document.getElementById('pBadgeText').value = p.badge_text;
+    document.getElementById('pIngredients').value = p.ingredients || '';
+    document.getElementById('pHowToUse').value = p.how_to_use || '';
+    document.getElementById('pStorageInfo').value = p.storage_info || '';
     document.getElementById('productModal').classList.add('open');
     document.getElementById('pImageUrl').value = p.image_url || '';
 if (p.image_url) {
@@ -509,6 +531,9 @@ document.getElementById('productModal').classList.add('open');
       badge: document.getElementById('pBadge').value,
       badge_text: document.getElementById('pBadgeText').value,
       image_url: document.getElementById('pImageUrl').value || null,
+      ingredients: document.getElementById('pIngredients').value || '',
+      how_to_use: document.getElementById('pHowToUse').value || '',
+      storage_info: document.getElementById('pStorageInfo').value || '',
       is_active: true
     };
     const url = editingProductId ? `${API_BASE}/api/products/${editingProductId}` : `${API_BASE}/api/products/`;
