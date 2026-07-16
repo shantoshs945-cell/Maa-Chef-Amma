@@ -892,8 +892,8 @@
   }
 
   function openPhonePeModal(customerName, total) {
-    const upiLink = `upi://pay?pa=${UPI_ID}&pn=MaaChefAmma&am=${total}&cu=INR&tn=Order by ${encodeURIComponent(customerName)}`;
-    const phonePeLink = `phonepe://pay?pa=${UPI_ID}&pn=MaaChefAmma&am=${total}&cu=INR&tn=Order by ${encodeURIComponent(customerName)}`;
+    const upiLink = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=MaaChefAmma&am=${total}&cu=INR`;
+    const phonePeLink = `phonepe://pay?pa=${encodeURIComponent(UPI_ID)}&pn=MaaChefAmma&am=${total}&cu=INR`;
     document.getElementById('phonePeModal').classList.add('open');
     document.getElementById('phonePeAmount').textContent = '₹' + total;
     document.getElementById('phonePeUpiId').textContent = UPI_ID;
