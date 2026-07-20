@@ -375,6 +375,28 @@
 
         <div class="divider"></div>
 
+      <!-- Weight Variants -->
+       ${p.variants && p.variants.length ? `
+       <div>
+         <div class="qty-label">Select Weight</div>
+           <div style="display:flex;gap:8px;flex-wrap:wrap;" id="variantSelector">
+             ${p.variants.map((v, i) => `
+              <button
+                     onclick="selectVariant(${i})"
+                   id="variant-${i}"
+                style="background:${i === 0 ? 'var(--gold)' : 'transparent'};
+               color:${i === 0 ? 'var(--dark)' : 'var(--cream)'};
+               border:0.5px solid ${i === 0 ? 'var(--gold)' : 'rgba(201,160,37,0.3)'};
+               border-radius:var(--radius-sm);padding:8px 16px;
+               font-family:'DM Sans',sans-serif;font-size:13px;
+               cursor:pointer;transition:all 0.2s;">
+        ${v.weight}
+        <span style="display:block;font-size:11px;opacity:0.8;">₹${v.price}</span>
+      </button>
+    `).join('')}
+  </div>
+</div>
+` : ''}
         <!-- Quantity -->
         <div>
           <div class="qty-label">Quantity</div>
@@ -455,6 +477,43 @@
     </div>`;
   }
 
+  // ─── VARIANT SELECTOR ───────────────────────────
+let selectedVariantIndex = 0;
+
+function selectVariant(index) {
+  if (!product.variants) return;
+  selectedVariantIndex = index;
+  const variant = product.variants[index];
+
+  // Update price display
+  document.getElementById('totalPrice').textContent = '₹' + (variant.price * qty);
+
+  // Update all variant buttons
+  product.variants.forEach((v, i) => {
+    const btn = document.getElementById(`variant-${i}`);
+    if (!btn) return;
+    if (i === index) {
+      btn.style.background = 'var(--gold)';
+      btn.style.color = 'var(--dark)';
+      btn.style.borderColor = 'var(--gold)';
+    } else {
+      btn.style.background = 'transparent';
+      btn.style.color = 'var(--cream)';
+      btn.style.borderColor = 'rgba(201,160,37,0.3)';
+    }
+  });
+
+  // Update price row
+  const priceMain = document.querySelector('.price-main');
+  const priceMrp = document.querySelector('.price-mrp');
+  const priceOff = document.querySelector('.price-off');
+  if (priceMain) priceMain.textContent = '₹' + variant.price;
+  if (priceMrp) priceMrp.textContent = variant.mrp ? '₹' + variant.mrp : '';
+  if (priceOff && variant.mrp) {
+    const disc = Math.round(((variant.mrp - variant.price) / variant.mrp) * 100);
+    priceOff.textContent = disc + '% off';
+  }
+}
   function switchTab(name, btn) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -463,15 +522,24 @@
   }
 
   function changeQty(delta) {
-    qty = Math.max(1, qty + delta);
-    document.getElementById('qtyDisplay').textContent = qty;
-    document.getElementById('totalPrice').textContent = '₹' + (product.price * qty);
-  }
+  qty = Math.max(1, qty + delta);
+  document.getElementById('qtyDisplay').textContent = qty;
+  const price = product.variants && product.variants[selectedVariantIndex]
+    ? product.variants[selectedVariantIndex].price
+    : product.price;
+  document.getElementById('totalPrice').textContent = '₹' + (price * qty);
+}
 
   function orderWhatsApp() {
-    const msg = `Hi! I'd like to order *${product.name}* x${qty} = ₹${product.price * qty} from Maa Chef Amma 🫙`;
-    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-  }
+  const variant = product.variants && product.variants[selectedVariantIndex]
+    ? ` (${product.variants[selectedVariantIndex].weight})`
+    : '';
+  const price = product.variants && product.variants[selectedVariantIndex]
+    ? product.variants[selectedVariantIndex].price
+    : product.price;
+  const msg = `Hi! I'd like to order *${product.name}${variant}* x${qty} = ₹${price * qty} from Maa Chef Amma 🫙`;
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+}
 
   function addToCartAndGo() {
     sessionStorage.setItem('pendingCartItem', JSON.stringify({ ...product, qty }));

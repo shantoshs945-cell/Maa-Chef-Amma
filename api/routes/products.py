@@ -23,6 +23,7 @@ class Product(BaseModel):
     ingredients: Optional[str] = ""
     how_to_use: Optional[str] = ""
     storage_info: Optional[str] = ""
+    variants: Optional[Any] = None
 
 @router.get("/")
 def get_products():

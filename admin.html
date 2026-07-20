@@ -264,6 +264,15 @@
       <div class="form-group"><label>Badge (optional)</label><input type="text" id="pBadge" placeholder="bestseller"></div>
       <div class="form-group"><label>Badge Text</label><input type="text" id="pBadgeText" placeholder="Bestseller"></div>
     </div>
+
+      <!-- VARIANTS -->
+      <div class="form-group">
+       <label>Weight Variants <span style="font-size:11px;color:var(--muted);">(optional — add different sizes with prices)</span></label>
+       <div id="variantsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;"></div>
+       <button type="button" onclick="addVariantRow()" style="background:transparent;border:0.5px solid rgba(201,160,37,0.3);color:var(--gold);border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;">
+        + Add Variant
+       </button>
+      </div>
     <div class="form-group">
   <label>Ingredients <span style="font-size:11px;color:var(--muted);">(comma separated)</span></label>
   <textarea id="pIngredients" rows="2" style="resize:none;" placeholder="e.g. Fresh Chicken, Red Chili, Turmeric, Garlic"></textarea>
@@ -479,6 +488,7 @@
   document.getElementById('pIngredients').value = '';
   document.getElementById('pHowToUse').value = '';
   document.getElementById('pStorageInfo').value = '';
+  document.getElementById('variantsList').innerHTML = '';
   document.getElementById('productModal').classList.add('open');
 }
 
@@ -500,6 +510,7 @@
     document.getElementById('pBadge').value = p.badge;
     document.getElementById('pBadgeText').value = p.badge_text;
     document.getElementById('pIngredients').value = p.ingredients || '';
+    loadVariants(p.variants);
     document.getElementById('pHowToUse').value = p.how_to_use || '';
     document.getElementById('pStorageInfo').value = p.storage_info || '';
     document.getElementById('productModal').classList.add('open');
@@ -534,6 +545,7 @@ document.getElementById('productModal').classList.add('open');
       ingredients: document.getElementById('pIngredients').value || '',
       how_to_use: document.getElementById('pHowToUse').value || '',
       storage_info: document.getElementById('pStorageInfo').value || '',
+      variants: getVariants(),
       is_active: true
     };
     const url = editingProductId ? `${API_BASE}/api/products/${editingProductId}` : `${API_BASE}/api/products/`;
@@ -812,6 +824,43 @@ async function deleteCategory(id) {
 
 // Load categories on app start
 loadCategories();
+
+// ─── VARIANTS ───────────────────────────────────
+function addVariantRow(weight = '', price = '', mrp = '') {
+  const list = document.getElementById('variantsList');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:8px;align-items:center;';
+  row.innerHTML = `
+    <input type="text" placeholder="Weight (e.g. 250g)" value="${weight}"
+      style="flex:1;background:var(--surface);border:0.5px solid #D3D1C7;border-radius:var(--radius-sm);padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);">
+    <input type="number" placeholder="Price ₹" value="${price}"
+      style="width:90px;background:var(--surface);border:0.5px solid #D3D1C7;border-radius:var(--radius-sm);padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);">
+    <input type="number" placeholder="MRP ₹" value="${mrp}"
+      style="width:90px;background:var(--surface);border:0.5px solid #D3D1C7;border-radius:var(--radius-sm);padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);">
+    <button type="button" onclick="this.parentElement.remove()"
+      style="background:#FEE2E2;color:#B91C1C;border:none;border-radius:var(--radius-sm);padding:8px 10px;cursor:pointer;font-size:12px;">✕</button>
+  `;
+  list.appendChild(row);
+}
+
+function getVariants() {
+  const rows = document.getElementById('variantsList').querySelectorAll('div');
+  const variants = [];
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const weight = inputs[0].value.trim();
+    const price = parseInt(inputs[1].value);
+    const mrp = parseInt(inputs[2].value) || null;
+    if (weight && price) variants.push({ weight, price, mrp });
+  });
+  return variants.length ? variants : null;
+}
+
+function loadVariants(variants) {
+  document.getElementById('variantsList').innerHTML = '';
+  if (!variants || !variants.length) return;
+  variants.forEach(v => addVariantRow(v.weight, v.price, v.mrp || ''));
+}
 </script>
 </body>
 </html>
