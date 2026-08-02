@@ -530,6 +530,7 @@ document.getElementById('productModal').classList.add('open');
   function closeProductModal() { document.getElementById('productModal').classList.remove('open'); }
 
   async function saveProduct() {
+  try {
     const data = {
       name: document.getElementById('pName').value,
       description: document.getElementById('pDesc').value,
@@ -550,11 +551,21 @@ document.getElementById('productModal').classList.add('open');
     };
     const url = editingProductId ? `${API_BASE}/api/products/${editingProductId}` : `${API_BASE}/api/products/`;
     const method = editingProductId ? 'PUT' : 'POST';
-    await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    if (!res.ok) {
+      const err = await res.json();
+      showToast('Error: ' + (err.detail || 'Save failed'));
+      console.error('Save error:', err);
+      return;
+    }
     closeProductModal();
     loadProducts();
     showToast(editingProductId ? 'Product updated!' : 'Product added!');
+  } catch(e) {
+    console.error('saveProduct error:', e);
+    showToast('Something went wrong. Check console.');
   }
+}
 
   async function deleteProduct(id) {
     if (!confirm('Hide this product from the store?')) return;
