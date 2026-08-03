@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from database import supabase
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Any
 
 router = APIRouter()
 
