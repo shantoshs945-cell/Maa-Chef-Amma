@@ -441,10 +441,17 @@
     <li><a href="#reviews">Reviews</a></li>
     <li><a href="tel:+919989340476">Contact</a></li>
   </ul>
+   <div style="display:flex;align-items:center;gap:10px;">
+  <div id="authNavBtn">
+    <a href="login.html" style="font-size:0.78rem;color:var(--gold);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;border:1px solid rgba(201,160,37,0.4);padding:0.5rem 1.2rem;border-radius:var(--radius-sm);transition:all 0.2s;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(201,160,37,0.08)'" onmouseout="this.style.background='transparent'">
+      <i class="ti ti-user"></i> Login
+    </a>
+  </div>
   <button class="nav-cta" onclick="openCart()">
     <i class="ti ti-shopping-cart"></i> Cart
     <span class="cart-count" id="cartCount">0</span>
   </button>
+</div>
 </nav>
 
 <!-- HERO -->
@@ -738,6 +745,34 @@
   }
   animRing();
 
+
+  // ── AUTH ──
+const currentUser = JSON.parse(localStorage.getItem('mca_user') || 'null');
+
+function updateNavForAuth() {
+  const authBtn = document.getElementById('authNavBtn');
+  if (!authBtn) return;
+  if (currentUser) {
+    authBtn.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;">
+        <a href="profile.html" style="font-size:0.78rem;color:var(--gold);text-decoration:none;letter-spacing:0.08em;display:flex;align-items:center;gap:5px;">
+          <i class="ti ti-user-circle" style="font-size:18px;"></i>
+          ${currentUser.name.split(' ')[0]}
+        </a>
+        <button onclick="logout()" style="background:transparent;border:0.5px solid rgba(201,160,37,0.2);color:var(--muted);padding:4px 10px;border-radius:var(--radius-sm);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'">
+          Logout
+        </button>
+      </div>
+    `;
+  }
+}
+
+function logout() {
+  localStorage.removeItem('mca_user');
+  window.location.reload();
+}
+
+updateNavForAuth();
   // ── SCROLL REVEAL ──
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
@@ -764,11 +799,20 @@
     `).join('')}
   `;
 
-  try {
+    try {
     const res = await fetch(`${API_BASE}/api/products/`);
     allProducts = await res.json();
     document.getElementById('productCount').textContent = allProducts.length;
     renderProducts();
+
+    // Handle pending cart after login
+    const pendingId = sessionStorage.getItem('pendingCartProductId');
+    if (pendingId && currentUser) {
+      sessionStorage.removeItem('pendingCartProductId');
+      const p = allProducts.find(x => x.id === parseInt(pendingId));
+      if (p) { cart.push({ ...p, qty: 1 }); updateCartCount(); openCart(); }
+    }
+
   } catch(e) {
     document.getElementById('productsGrid').innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;">Could not load products. Please try again.</p>';
   }
@@ -821,13 +865,19 @@
 
   // ── CART ──
   function addToCart(id) {
-    const p = allProducts.find(x => x.id === id);
-    const existing = cart.find(x => x.id === id);
-    if (existing) existing.qty++;
-    else cart.push({ ...p, qty: 1 });
-    updateCartCount();
-    showToast(p.name + ' added to cart!');
+  if (!currentUser) {
+    sessionStorage.setItem('redirectAfterLogin', window.location.href);
+    sessionStorage.setItem('pendingCartProductId', id);
+    window.location.href = 'login.html';
+    return;
   }
+  const p = allProducts.find(x => x.id === id);
+  const existing = cart.find(x => x.id === id);
+  if (existing) existing.qty++;
+  else cart.push({ ...p, qty: 1 });
+  updateCartCount();
+  showToast(p.name + ' added to cart!');
+}
   function updateCartCount() { document.getElementById('cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0); }
   function openCart() { document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartSidebar').classList.add('open'); renderCart(); }
   function closeCart() { document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartSidebar').classList.remove('open'); }
